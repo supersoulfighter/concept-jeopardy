@@ -2,7 +2,7 @@
 //  The smaller the file size of the assets, the better, as the Boot Scene itself has no preloader.
 class Boot extends Phaser.Scene {
 	constructor() {
-		super('Boot');
+		super(CJ.SCENES.BOOT);
 	}
 
 	preload() {
@@ -12,6 +12,6 @@ class Boot extends Phaser.Scene {
 
 	create() {
 		// this.sound.pauseOnBlur = false;
-		this.scene.start('Preloader');
+		this.scene.start(CJ.SCENES.PRELOADER);
 	}
 }

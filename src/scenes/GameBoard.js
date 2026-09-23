@@ -1,7 +1,7 @@
 // 2. The Main Jeopardy Board Scene
 class GameBoard extends Phaser.Scene {
 	constructor() {
-		super({ key: 'GameBoard' });
+		super({ key: CJ.SCENES.BOARD });
 	}
 
 	init(data) {
@@ -11,47 +11,42 @@ class GameBoard extends Phaser.Scene {
 	}
 
 	create() {
-		const r = this.scale.width;
-		const b = this.scale.height;
-		const cx = r / 2;
-		const cy = b / 2;
-		this.add.image(cx,cy,"room").setOrigin(.5).setScale(1.5)
+		const L = CJ.LAYOUT.BOARD;
+		const width = this.scale.width;
+		const cx = width / 2;
+		const cy = this.scale.height / 2;
+		this.add.image(cx, cy, CJ.ASSETS.ROOM.key).setOrigin(0.5).setScale(L.BG_SCALE);
 
 		this.scoreText = this.add.text(
-			r - 40,
-			40,
+			width - L.SCORE_MARGIN,
+			L.SCORE_MARGIN,
 			`SCORE: $${this.score}`,
 			{
-				fontFamily: 'Barlow-Condensed-700',
-				fontSize: '24px',
-				fill: '#00ff00'
+				fontFamily: CJ.FONT.key(700),
+				fontSize: L.SCORE_SIZE,
+				fill: CJ.TEXT.SCORE
 			}
-		).setOrigin(1,0);
-
-		const colWidth = 200;
-		const rowHeight = 80;
-		const startX = 150;
-		const startY = 120;
+		).setOrigin(1, 0);
 
 		GAME_DATA.forEach((catData, colIdx) => {
 			// Render Category Header
 			this.add.text(
-				startX + (colIdx * colWidth),
-				startY,
+				L.START_X + (colIdx * L.COL_WIDTH),
+				L.START_Y,
 				catData.category,
 				{
-					fontFamily: 'Barlow-Condensed-400',
-					fontSize: '20px',
-					fill: '#ffff00',
+					fontFamily: CJ.FONT.key(400),
+					fontSize: L.CATEGORY_SIZE,
+					fill: CJ.TEXT.CATEGORY,
 					align: 'center',
-					wordWrap: { width: colWidth - 20 }
+					wordWrap: { width: L.COL_WIDTH - L.HEADER_PAD }
 				}
 			).setOrigin(0.5);
 
 			// Render Point Tiles
 			catData.clues.forEach((clue, rowIdx) => {
-				const x = startX + (colIdx * colWidth);
-				const y = startY + ((rowIdx + 1) * rowHeight);
+				const x = L.START_X + (colIdx * L.COL_WIDTH);
+				const y = L.START_Y + ((rowIdx + 1) * L.ROW_HEIGHT);
 				const clueId = `${colIdx}-${rowIdx}`;
 
 				// Check if this clue was already picked
@@ -61,33 +56,32 @@ class GameBoard extends Phaser.Scene {
 				const tileBg = this.add.rectangle(
 					x,
 					y,
-					colWidth - 10,
-					rowHeight - 10,
-					isVisited ? 0x333333 : 0x1155ff
-				)
-				// .setStrokeStyle(2, 0xffffff);
+					L.COL_WIDTH - L.TILE_PAD,
+					L.ROW_HEIGHT - L.TILE_PAD,
+					isVisited ? CJ.COLORS.TILE_VISITED : CJ.COLORS.TILE
+				);
 
 				// Draw Text Value
-				const tileText = this.add.text(
+				this.add.text(
 					x,
 					y,
-					isVisited ? "" : `$${clue.points}`,
+					isVisited ? '' : `$${clue.points}`,
 					{
-						fontSize: '30px',
-						fill: '#fffb00ff',
-						fontFamily: 'Barlow-Condensed-600',
+						fontSize: L.POINTS_SIZE,
+						fill: CJ.TEXT.POINTS,
+						fontFamily: CJ.FONT.key(600),
 					}
 				).setOrigin(0.5);
 
 				if (!isVisited) {
 					// Make Interactive
 					tileBg.setInteractive({ useHandCursor: true });
-					tileBg.on('pointerover', () => tileBg.setFillStyle(0x0000ff));
-					tileBg.on('pointerout', () => tileBg.setFillStyle(0x0000af));
+					tileBg.on('pointerover', () => tileBg.setFillStyle(CJ.COLORS.TILE_HOVER));
+					tileBg.on('pointerout', () => tileBg.setFillStyle(CJ.COLORS.TILE));
 					tileBg.on('pointerdown', () => {
 						this.visitedClues.push(clueId);
 						// Launch the Clue overlay scene
-						this.scene.start('Clue', {
+						this.scene.start(CJ.SCENES.CLUE, {
 							clue: clue,
 							score: this.score,
 							visitedClues: this.visitedClues
