@@ -8,6 +8,8 @@ class Clue extends Phaser.Scene {
 		this.clue = data.clue;
 		this.score = data.score;
 		this.visitedClues = data.visitedClues;
+		this.board = data.board;
+		this.layout = data.layout;
 
 		const L = CJ.LAYOUT.CLUE;
 		const cx = this.scale.width / 2;
@@ -20,7 +22,7 @@ class Clue extends Phaser.Scene {
 		this.promptText = this.add.text(
 			cx,
 			cy + L.PROMPT_DY,
-			this.clue.question,
+			this.clue.answer,
 			{
 				fontSize: L.PROMPT_SIZE,
 				fill: CJ.TEXT.CLUE,
@@ -61,7 +63,7 @@ class Clue extends Phaser.Scene {
 		const cy = this.scale.height / 2;
 
 		// Show correct answer text
-		this.add.text(cx, cy + L.ANSWER_DY, this.clue.answer, {
+		this.add.text(cx, cy + L.ANSWER_DY, this.clue.question, {
 			fontSize: L.ANSWER_SIZE,
 			fill: CJ.TEXT.ANSWER,
 			fontStyle: 'bold',
@@ -86,7 +88,7 @@ class Clue extends Phaser.Scene {
 				fill: CJ.TEXT.BTN_LIGHT
 			}
 		).setOrigin(0.5);
-		correctBtn.on('pointerdown', () => this.returnToBoard(this.clue.points));
+		correctBtn.on('pointerdown', () => this.returnToBoard(this.clue.value));
 
 		// Incorrect Button (- Points)
 		const wrongBtn = this.add.rectangle(
@@ -106,13 +108,15 @@ class Clue extends Phaser.Scene {
 				fill: CJ.TEXT.BTN_LIGHT
 			}
 		).setOrigin(0.5);
-		wrongBtn.on('pointerdown', () => this.returnToBoard(-this.clue.points));
+		wrongBtn.on('pointerdown', () => this.returnToBoard(-this.clue.value));
 	}
 
 	returnToBoard(pointsModifier) {
 		this.scene.start(CJ.SCENES.BOARD, {
 			score: this.score + pointsModifier,
-			visitedClues: this.visitedClues
+			visitedClues: this.visitedClues,
+			board: this.board,
+			layout: this.layout
 		});
 	}
 }

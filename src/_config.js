@@ -10,8 +10,8 @@ const deepFreeze = (obj) => {
 
 const CJ = deepFreeze({
 	// Game canvas
-	GAME_WIDTH: 1280,
-	GAME_HEIGHT: 720,
+	GAME_WIDTH: 1352,
+	GAME_HEIGHT: 878,
 	GAME_HTML_ELEMENT: 'game-container',
 
 	// Scene keys
@@ -64,18 +64,22 @@ const CJ = deepFreeze({
 	// Per-scene layout. Scenes derive positions from these base values
 	// and the canvas center, so nothing here is an absolute coordinate.
 	LAYOUT: {
+		// Board is parameterized: the grid is COL_NUM x ROW_NUM and every
+		// dimension is derived from the screen size at scene start. Any of
+		// these can be overridden per launch via scene data (data.layout).
 		BOARD: {
 			BG_SCALE: 1.5,
-			COL_WIDTH: 200,
-			ROW_HEIGHT: 80,
-			START_X: 150,
-			START_Y: 120,
-			TILE_PAD: 10,
+			COL_NUM: 5,          // categories per board
+			ROW_NUM: 5,          // clue tiles per category
+			MARGIN_X: 60,        // left/right margin around the grid
+			MARGIN_TOP: 100,     // room for the score line
+			MARGIN_BOTTOM: 40,
+			TILE_PAD: 5,
 			HEADER_PAD: 20,
 			SCORE_MARGIN: 40,
 			SCORE_SIZE: '24px',
-			CATEGORY_SIZE: '20px',
-			POINTS_SIZE: '30px',
+			MAX_CLUE_VALUE: 1000, // dollar value of a max-weight clue
+			WEIGHT_MAX: 5,        // highest weight used in GAME_DATA
 		},
 		CLUE: {
 			PANEL_W: 800,
@@ -105,3 +109,13 @@ const CJ = deepFreeze({
 		},
 	},
 });
+
+// Return up to n randomly chosen items from arr (Fisher-Yates shuffle).
+const pickRandom = (arr, n) => {
+	const pool = [...arr];
+	for (let i = pool.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[pool[i], pool[j]] = [pool[j], pool[i]];
+	}
+	return pool.slice(0, n);
+};
