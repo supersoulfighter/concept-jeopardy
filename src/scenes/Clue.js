@@ -64,6 +64,13 @@ class Clue extends Phaser.Scene {
 		STYLE: { ...CJ.TYPE_LEVELS.P_BIG, fill: CJ.PALETTE.BLACK },
 	};
 
+	// Countdown bar along the bottom edge — shrinks to zero
+	static TIMER = {
+		MS: 6000, // player gets 6 seconds to respond
+		H: 12,
+		COLOR: hexToInt(CJ.PALETTE.AMBER),
+	};
+
 
 	constructor() {
 		super({key: CJ.SCENES.CLUE});
@@ -123,6 +130,21 @@ class Clue extends Phaser.Scene {
 
 		// Typing: printable keys append, Backspace deletes, Enter submits
 		this.input.keyboard.on('keydown', (event) => this.onTypeKey(event));
+
+		// Countdown: a bar that shrinks to zero in TIMER.MS milliseconds.
+		// delayedCall fires onTimeUp once; update() animates the bar.
+		const T = Clue.TIMER;
+		this.timerBar = this.add.rectangle(
+			0, this.scale.height - T.H, this.scale.width, T.H, T.COLOR
+		).setOrigin(0, 0);
+		this.timer = this.time.delayedCall(T.MS, () => this.onTimeUp());
+	}
+
+
+	// Shrink the timer bar to match the countdown's remaining time.
+	update() {
+		if (this.submitted) return;
+		this.timerBar.scaleX = 1 - this.timer.getProgress();
 	}
 
 
@@ -162,18 +184,33 @@ class Clue extends Phaser.Scene {
 	// Check the response against the clue's "question" and show the verdict.
 	submitResponse() {
 		if (this.submitted) return;
-		this.submitted = true;
 
 		const isCorrect = normalizeResponse(this.response)
 			=== normalizeResponse(this.clue.question);
-		this.pointsDelta = isCorrect ? this.clue.value : -this.clue.value;
-		this.showResult(isCorrect);
+		const R = Clue.RESULT;
+		this.finishRound(
+			isCorrect ? 'CORRECT!' : 'INCORRECT',
+			isCorrect ? R.CORRECT_STYLE : R.WRONG_STYLE,
+			isCorrect ? this.clue.value : -this.clue.value
+		);
 	}
 
 
-	// Swap the input row for the verdict, the right "question",
-	// and a Continue button.
-	showResult(isCorrect) {
+	// The countdown hit zero — same penalty as a wrong response.
+	onTimeUp() {
+		this.finishRound('TIMES UP', Clue.RESULT.WRONG_STYLE, -this.clue.value);
+	}
+
+
+	// Lock in the outcome, stop the timer, and swap the input row for
+	// the verdict, the right "question", and a Continue button.
+	finishRound(verdict, verdictStyle, pointsDelta) {
+		if (this.submitted) return;
+		this.submitted = true;
+		this.pointsDelta = pointsDelta;
+		this.timer.remove();
+		this.timerBar.destroy();
+
 		const cx = this.scale.width / 2;
 		const cy = this.scale.height / 2;
 
@@ -182,13 +219,8 @@ class Clue extends Phaser.Scene {
 		this.submitBtn.destroy();
 		this.submitText.destroy();
 
-		const R = Clue.RESULT;
-		this.add.text(
-			cx,
-			cy + R.DY,
-			isCorrect ? 'CORRECT!' : 'INCORRECT',
-			isCorrect ? R.CORRECT_STYLE : R.WRONG_STYLE
-		).setOrigin(0.5);
+		this.add.text(cx, cy + Clue.RESULT.DY, verdict, verdictStyle)
+			.setOrigin(0.5);
 
 		// Reveal the right "question"
 		this.add.text(cx, cy + Clue.ANSWER.DY, this.clue.question, {
@@ -210,8 +242,19 @@ class Clue extends Phaser.Scene {
 
 
 	returnToBoard(pointsModifier) {
+		const score = this.score + pointsModifier;
+
+		// Count every tile on the board — if all are visited, game over
+		const totalClues = this.board.reduce(
+			(sum, cat) => sum + cat.clues.length, 0
+		);
+		if (this.visitedClues.length >= totalClues) {
+			this.scene.start(CJ.SCENES.GAMEOVER, { score });
+			return;
+		}
+
 		this.scene.start(CJ.SCENES.BOARD, {
-			score: this.score + pointsModifier,
+			score,
 			visitedClues: this.visitedClues,
 			board: this.board,
 			layout: this.layout

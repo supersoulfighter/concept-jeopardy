@@ -104,7 +104,11 @@ class GameBoard extends Phaser.Scene {
 			width - GameBoard.SCORE_READOUT.MARGIN,
 			GameBoard.SCORE_READOUT.MARGIN,
 			`SCORE: $${this.score}`,
-			{ ...GameBoard.SCORE_READOUT.STYLE }
+			{
+				...GameBoard.SCORE_READOUT.STYLE,
+				// Red when the player is in the hole
+				fill: this.score < 0 ? CJ.PALETTE.RED_BRIGHT : CJ.PALETTE.LIME,
+			}
 		).setOrigin(1, 0);
 
 		// Derive the grid from the screen size: one extra row for headers.

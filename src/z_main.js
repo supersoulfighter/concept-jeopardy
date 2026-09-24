@@ -14,7 +14,8 @@ const config = {
 		Preloader,
 		MainMenu,
 		GameBoard,
-		Clue
+		Clue,
+		GameOver
 	],
 };
 

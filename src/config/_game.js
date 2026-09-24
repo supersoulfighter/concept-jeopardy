@@ -10,4 +10,5 @@ CJ.SCENES = {
 	MENU: 'MainMenu',
 	BOARD: 'GameBoard',
 	CLUE: 'Clue',
+	GAMEOVER: 'GameOver',
 };
