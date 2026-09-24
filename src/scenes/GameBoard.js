@@ -50,11 +50,7 @@ class GameBoard extends Phaser.Scene {
 			width - L.SCORE_MARGIN,
 			L.SCORE_MARGIN,
 			`SCORE: $${this.score}`,
-			{
-				fontFamily: CJ.FONT.key(700),
-				fontSize: L.SCORE_SIZE,
-				fill: CJ.TEXT.SCORE
-			}
+			{ ...CJ.UI.SCORE }
 		).setOrigin(1, 0);
 
 		// Derive the grid from the screen size: one extra row for headers.
@@ -74,10 +70,8 @@ class GameBoard extends Phaser.Scene {
 				L.MARGIN_TOP + rowH / 2,
 				catData.category,
 				{
-					fontFamily: CJ.FONT.key(400),
-					fontSize: `${categorySize}px`,
-					fill: CJ.TEXT.CATEGORY,
-					align: 'center',
+					...CJ.UI.BOARD_HEADING,
+					fontSize: categorySize,
 					wordWrap: { width: colW - L.HEADER_PAD }
 				}
 			).setOrigin(0.5);
@@ -105,9 +99,8 @@ class GameBoard extends Phaser.Scene {
 					y,
 					isVisited ? '' : `$${clue.value}`,
 					{
-						fontSize: `${pointsSize}px`,
-						fill: CJ.TEXT.POINTS,
-						fontFamily: CJ.FONT.key(600),
+						...CJ.UI.BOARD_CELL,
+						fontSize: pointsSize,
 					}
 				).setOrigin(0.5);
 

@@ -24,9 +24,7 @@ class Clue extends Phaser.Scene {
 			cy + L.PROMPT_DY,
 			this.clue.answer,
 			{
-				fontSize: L.PROMPT_SIZE,
-				fill: CJ.TEXT.CLUE,
-				align: 'center',
+				...CJ.UI.CLUE_PROMPT,
 				wordWrap: {width: L.TEXT_WRAP}
 			}
 		).setOrigin(0.5);
@@ -44,10 +42,7 @@ class Clue extends Phaser.Scene {
 			cx,
 			cy + L.REVEAL_DY,
 			'Reveal Answer',
-			{
-				fontSize: L.BTN_SIZE,
-				fill: CJ.TEXT.BTN_DARK
-			}
+			{ ...CJ.UI.BUTTON_DARK }
 		).setOrigin(0.5);
 
 		revealBtn.on('pointerdown', () => {
@@ -64,10 +59,7 @@ class Clue extends Phaser.Scene {
 
 		// Show correct answer text
 		this.add.text(cx, cy + L.ANSWER_DY, this.clue.question, {
-			fontSize: L.ANSWER_SIZE,
-			fill: CJ.TEXT.ANSWER,
-			fontStyle: 'bold',
-			align: 'center',
+			...CJ.UI.CLUE_ANSWER,
 			wordWrap: {width: L.TEXT_WRAP}
 		}).setOrigin(0.5);
 
@@ -83,10 +75,7 @@ class Clue extends Phaser.Scene {
 			cx - L.BTN_DX,
 			cy + L.BTN_ROW_DY,
 			'Correct',
-			{
-				fontSize: L.BTN_SIZE,
-				fill: CJ.TEXT.BTN_LIGHT
-			}
+			{ ...CJ.UI.BUTTON }
 		).setOrigin(0.5);
 		correctBtn.on('pointerdown', () => this.returnToBoard(this.clue.value));
 
@@ -103,10 +92,7 @@ class Clue extends Phaser.Scene {
 			cx + L.BTN_DX,
 			cy + L.BTN_ROW_DY,
 			'Incorrect',
-			{
-				fontSize: L.BTN_SIZE,
-				fill: CJ.TEXT.BTN_LIGHT
-			}
+			{ ...CJ.UI.BUTTON }
 		).setOrigin(0.5);
 		wrongBtn.on('pointerdown', () => this.returnToBoard(-this.clue.value));
 	}
