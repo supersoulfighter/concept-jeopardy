@@ -23,3 +23,16 @@ const pickRandom = (arr, n) => {
 	}
 	return pool.slice(0, n);
 };
+
+// Reduce a Jeopardy "question" (or the player's typed response) to the
+// part that matters: drops the "What/Who/When is/are" prefix, accent
+// marks, punctuation, articles, whitespace, and case — so "Pokémon"
+// matches "pokemon" and "What is Mario?" matches "mario".
+const normalizeResponse = (str) => str
+	.toLowerCase()
+	.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // strip accent marks (U+0300–U+036F)
+	.replace(/^(what|who|when)\s+(is|are)\s+/, '')
+	.replace(/[^a-z0-9\s]/g, '')
+	.split(/\s+/)
+	.filter((w) => w && !['a', 'an', 'the'].includes(w))
+	.join('');

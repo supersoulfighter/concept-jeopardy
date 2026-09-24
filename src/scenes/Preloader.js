@@ -32,7 +32,7 @@ class Preloader extends Phaser.Scene {
 
 
 	preload() {
-		// BUG-desktop: load.setPath fails. Use full paths in CJ.ASSETS instead.
+		// BUG-desktop: load.setPath fails. Use full paths in CJ.IMAGES instead.
 		Object.values(CJ.IMAGES).forEach((asset) => {
 			this.load.image(asset.key, asset.src);
 		});

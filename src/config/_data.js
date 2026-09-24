@@ -4,11 +4,11 @@ const GAME_DATA = [
 		category: "JAVASCRIPT",
 		clues: [
 			{ weight: 1, answer: "The framework this game is built on.", question: "What is Phaser?" },
-			{ weight: 2, answer: "Keyword used to declare a block-scoped variable.", question: "What is let (or const)?" },
+			{ weight: 2, answer: "Keyword used to declare a variable that can't be reassigned.", question: "What is const?" },
 			{ weight: 1, answer: "The punctuation that ends most JavaScript statements.", question: "What is a semicolon?" },
 			{ weight: 2, answer: "Curly braces group code into one of these.", question: "What is a block?" },
 			{ weight: 3, answer: "The method that prints messages to the developer console.", question: "What is console.log()?" },
-			{ weight: 3, answer: "The operator that joins two strings together.", question: "What is + (concatenation)?" },
+			{ weight: 3, answer: "Joining two strings together with the + operator.", question: "What is concatenation?" },
 			{ weight: 4, answer: "true or false — the type named after mathematician George Boole.", question: "What is a boolean?" },
 			{ weight: 4, answer: "The value of a variable that's been declared but never assigned.", question: "What is undefined?" },
 			{ weight: 5, answer: "The structure that stores key-value pairs, like player.name.", question: "What is an object?" },
@@ -65,7 +65,7 @@ const GAME_DATA = [
 			{ weight: 5, answer: "Code that evaluates down to a value, like 2 + 3.", question: "What is an expression?" },
 			{ weight: 1, answer: "Symbols like +, -, and === that do work on values.", question: "What are operators?" },
 			{ weight: 2, answer: "A reusable block of code you call by name.", question: "What is a function?" },
-			{ weight: 3, answer: "The inputs you hand to a function when you call it.", question: "What are parameters (arguments)?" },
+			{ weight: 3, answer: "The inputs you hand to a function when you call it.", question: "What are parameters?" },
 			{ weight: 4, answer: "Repeats a block of code for every item or until a condition changes.", question: "What is a loop?" },
 			{ weight: 5, answer: "if / else — code that only runs when something is true.", question: "What is a conditional?" }
 		]
@@ -73,13 +73,13 @@ const GAME_DATA = [
 	{
 		category: "ENGINE SYSTEMS",
 		clues: [
-			{ weight: 1, answer: "The engine's name for a 'thing' in the world — player, enemy, or coin.", question: "What is an entity (game object)?" },
-			{ weight: 2, answer: "Linking a sword to a character's hand so it follows along.", question: "What is parenting (a hierarchy)?" },
+			{ weight: 1, answer: "The engine's name for a 'thing' in the world — player, enemy, or coin.", question: "What is an entity?" },
+			{ weight: 2, answer: "Linking a sword to a character's hand so it follows along.", question: "What is parenting?" },
 			{ weight: 3, answer: "An object's position, rotation, and scale.", question: "What is a transform?" },
 			{ weight: 4, answer: "The system that makes objects fall, collide, and bounce.", question: "What is physics?" },
 			{ weight: 5, answer: "The system that draws everything on screen each frame.", question: "What is the renderer?" },
-			{ weight: 1, answer: "Sparks, smoke, and explosions made of many tiny sprites.", question: "What are particle effects (PFX)?" },
-			{ weight: 2, answer: "The code that decides what happens when a player touches a coin.", question: "What is gameplay logic (scripting)?" },
+			{ weight: 1, answer: "Sparks, smoke, and explosions made of many tiny sprites.", question: "What are particle effects?" },
+			{ weight: 2, answer: "The code that decides what happens when a player touches a coin.", question: "What is gameplay logic?" },
 			{ weight: 3, answer: "The system that decides how enemies chase or flee the player.", question: "What is AI?" },
 			{ weight: 4, answer: "Health bars, menus, and score counters drawn on top of the game.", question: "What is the UI?" },
 			{ weight: 5, answer: "Keyboard, mouse, gamepad — the system that reads them all.", question: "What is input?" },
@@ -98,7 +98,7 @@ const GAME_DATA = [
 			{ weight: 2, answer: "A small game inside the big one, like a lock-picking challenge.", question: "What is a mini-game?" },
 			{ weight: 3, answer: "Tuning so no weapon or strategy is unfairly strong.", question: "What is balance?" },
 			{ weight: 4, answer: "How gold, gems, and rewards flow through a game.", question: "What is the game economy?" },
-			{ weight: 5, answer: "The sequence of events the player experiences.", question: "What is the plot (narrative)?" },
+			{ weight: 5, answer: "The sequence of events the player experiences.", question: "What is the plot?" },
 			{ weight: 1, answer: "The heroes, villains, and NPCs that populate the world.", question: "What are characters?" },
 			{ weight: 2, answer: "The lines characters speak to each other.", question: "What is dialogue?" },
 			{ weight: 3, answer: "RPG, horror, platformer — labels that set player expectations.", question: "What is a genre?" },
@@ -114,7 +114,7 @@ const GAME_DATA = [
 			{ weight: 4, answer: "The buttons and frames are the UI; the art and text inside are this.", question: "What is content?" },
 			{ weight: 5, answer: "Arranging elements so the eye finds the important thing first.", question: "What is visual hierarchy?" },
 			{ weight: 1, answer: "The art of choosing and styling fonts.", question: "What is typography?" },
-			{ weight: 2, answer: "Teaching new players the controls without a manual.", question: "What is onboarding (a tutorial)?" },
+			{ weight: 2, answer: "Teaching new players the controls without a manual.", question: "What is onboarding?" },
 			{ weight: 3, answer: "Red for danger, green for go — signaling meaning through this.", question: "What is color coding?" },
 			{ weight: 4, answer: "Watching a new player fumble through your menu to find problems.", question: "What is usability testing?" },
 			{ weight: 5, answer: "The path a player takes from title screen to gameplay.", question: "What is the user flow?" }
@@ -130,8 +130,8 @@ const GAME_DATA = [
 			{ weight: 5, answer: "Repeating shapes or motifs, like bricks on a castle wall.", question: "What are patterns?" },
 			{ weight: 1, answer: "Making the most important thing the biggest or brightest.", question: "What is visual hierarchy?" },
 			{ weight: 2, answer: "Background layers scrolling slower than the foreground.", question: "What is parallax?" },
-			{ weight: 3, answer: "Shadows and highlights that give flat objects volume.", question: "What is shading (light and shade)?" },
-			{ weight: 4, answer: "Getting the head-to-body ratio right on a character.", question: "What is proportion (anatomy)?" },
+			{ weight: 3, answer: "Shadows and highlights that give flat objects volume.", question: "What is shading?" },
+			{ weight: 4, answer: "Getting the head-to-body ratio right on a character.", question: "What is proportion?" },
 			{ weight: 5, answer: "Arranging everything in the frame to guide the eye.", question: "What is composition?" },
 			{ weight: 1, answer: "The polish pass that turns a sketch into finished art.", question: "What is rendering?" },
 			{ weight: 2, answer: "Drawing the same character ten times to get it right.", question: "What is iteration?" },
@@ -140,7 +140,7 @@ const GAME_DATA = [
 			{ weight: 5, answer: "Early sketches that explore what a character could look like.", question: "What is concept art?" },
 			{ weight: 1, answer: "The surface image wrapped onto a 3D model.", question: "What is a texture?" },
 			{ weight: 2, answer: "Explosions and magic sparkles drawn as effects.", question: "What is VFX?" },
-			{ weight: 3, answer: "Sprites are flat; models have depth — this is the difference.", question: "What is 2D vs 3D?" },
+			{ weight: 3, answer: "Flat sprite art, as opposed to models with depth.", question: "What is 2D?" },
 			{ weight: 4, answer: "Art made of math curves that scales without getting blurry.", question: "What is vector art?" },
 			{ weight: 5, answer: "Art made of pixels, like a photo.", question: "What is raster art?" },
 			{ weight: 1, answer: "The important poses; the computer fills in the frames between.", question: "What are keyframes?" },
@@ -168,14 +168,14 @@ const GAME_DATA = [
 		clues: [
 			{ weight: 1, answer: "A recurring theme for a character — like Darth Vader's march.", question: "What is a leitmotif?" },
 			{ weight: 2, answer: "A track that repeats forever with no audible seam.", question: "What is a seamless loop?" },
-			{ weight: 3, answer: "Music that changes in real time when combat starts.", question: "What is adaptive (interactive) music?" },
-			{ weight: 4, answer: "Writing a loop that stays pleasant after fifty hours of play.", question: "What is anti-fatigue design (loop endurance)?" },
+			{ weight: 3, answer: "Music that changes in real time when combat starts.", question: "What is adaptive music?" },
+			{ weight: 4, answer: "Writing a loop that stays pleasant after fifty hours of play.", question: "What is loop endurance?" },
 			{ weight: 5, answer: "A short musical hit that punctuates finding an item.", question: "What is a stinger?" },
 			{ weight: 1, answer: "Replaying the hero's theme slower and sadder after a plot twist.", question: "What is motivic development?" },
-			{ weight: 2, answer: "The hummable main tune of a game.", question: "What is the melody (theme)?" },
+			{ weight: 2, answer: "The hummable main tune of a game.", question: "What is the melody?" },
 			{ weight: 3, answer: "Choosing instruments — strings for sadness, chiptune for retro.", question: "What is instrumentation?" },
 			{ weight: 4, answer: "The chords under the melody that set the mood.", question: "What is harmony?" },
-			{ weight: 5, answer: "Cutting all music right before a jump scare.", question: "What is a sudden rest (silence as a tool)?" }
+			{ weight: 5, answer: "Cutting all music right before a jump scare.", question: "What is silence?" }
 		]
 	},
 	{
@@ -183,11 +183,11 @@ const GAME_DATA = [
 		clues: [
 			{ weight: 1, answer: "Judging a sound by its waveform shape on screen.", question: "What is reading a waveform?" },
 			{ weight: 2, answer: "Balancing levels so footsteps don't drown the dialogue.", question: "What is mixing?" },
-			{ weight: 3, answer: "Attack, Decay, Sustain, Release — a sound's volume over time.", question: "What is an ADSR envelope?" },
+			{ weight: 3, answer: "Attack, Decay, Sustain, Release — a sound's volume over time.", question: "What is ADSR?" },
 			{ weight: 4, answer: "Panning and distance filtering so players hear where a sound is.", question: "What is spatialization?" },
 			{ weight: 5, answer: "Recording real objects — like snapping celery for breaking bones.", question: "What is Foley?" },
-			{ weight: 1, answer: "Carving out clashing frequencies so the mix isn't muddy.", question: "What is EQ (frequency carving)?" },
-			{ weight: 2, answer: "Keeping quiet and loud parts balanced without clipping.", question: "What is normalization (dynamic range)?" },
+			{ weight: 1, answer: "Carving out clashing frequencies so the mix isn't muddy.", question: "What is EQ?" },
+			{ weight: 2, answer: "Keeping quiet and loud parts balanced without clipping.", question: "What is normalization?" },
 			{ weight: 3, answer: "The satisfying 'ding' that confirms a button press.", question: "What is audio feedback?" },
 			{ weight: 4, answer: "Building a laser blast by stacking a synth zap on a real whip crack.", question: "What is layering?" },
 			{ weight: 5, answer: "The stock collection of effects every designer starts with — and shouldn't rely on.", question: "What is a sound library?" }
@@ -196,7 +196,7 @@ const GAME_DATA = [
 	{
 		category: "PRODUCING",
 		clues: [
-			{ weight: 1, answer: "The three constraints every producer juggles.", question: "What are time, scope, and budget?" },
+			{ weight: 1, answer: "The money constraint every producer juggles alongside time and scope.", question: "What is budget?" },
 			{ weight: 2, answer: "A to-do / doing / done board that keeps the team honest.", question: "What is task tracking?" },
 			{ weight: 3, answer: "The prioritized list of everything the team might build.", question: "What is the product backlog?" },
 			{ weight: 4, answer: "The calendar of milestones leading to launch.", question: "What is the release schedule?" },
@@ -205,7 +205,7 @@ const GAME_DATA = [
 			{ weight: 2, answer: "The short daily meeting where everyone says what they're doing.", question: "What is a stand-up?" },
 			{ weight: 3, answer: "A playable chunk of the game shown to prove progress.", question: "What is a milestone?" },
 			{ weight: 4, answer: "When 'just one more feature' blows up the schedule.", question: "What is scope creep?" },
-			{ weight: 5, answer: "The final build sent off for certification.", question: "What is the gold master (release candidate)?" }
+			{ weight: 5, answer: "The final build sent off for certification.", question: "What is the gold master?" }
 		]
 	},
 	{
@@ -217,7 +217,7 @@ const GAME_DATA = [
 			{ weight: 4, answer: "How the game makes money — ads, IAP, subscriptions.", question: "What is monetization?" },
 			{ weight: 5, answer: "Data the game sends home about how people actually play.", question: "What is telemetry?" },
 			{ weight: 1, answer: "Tracking costs against revenue to keep the studio alive.", question: "What is finance?" },
-			{ weight: 2, answer: "The plan for launching the game into the market.", question: "What is a go-to-market strategy?" },
+			{ weight: 2, answer: "The plan for launching the game into the market.", question: "What is go-to-market?" },
 			{ weight: 3, answer: "Monthly Active Users — DAU's bigger sibling.", question: "What is MAU?" },
 			{ weight: 4, answer: "Free-to-play, premium, or subscription — choosing the price tag.", question: "What is pricing?" },
 			{ weight: 5, answer: "The document describing who the game is for and why they'll buy it.", question: "What is the product vision?" }
@@ -229,9 +229,9 @@ const GAME_DATA = [
 			{ weight: 1, answer: "A coordinated push of ads and posts around launch.", question: "What is a campaign?" },
 			{ weight: 2, answer: "Groups of players with shared traits you target differently.", question: "What are segments?" },
 			{ weight: 3, answer: "Your whole game explained in thirty seconds.", question: "What is an elevator pitch?" },
-			{ weight: 4, answer: "Videos that show off gameplay — or the making-of journey.", question: "What are trailers and devlogs?" },
-			{ weight: 5, answer: "Discord, Reddit, TikTok — where player communities form.", question: "What are forums and social media?" },
-			{ weight: 1, answer: "The logo, title art, and store banner that identify the game.", question: "What is key art (branding)?" },
+			{ weight: 4, answer: "Videos that show off gameplay to hype the launch.", question: "What are trailers?" },
+			{ weight: 5, answer: "Discord, Reddit, TikTok — where player communities form.", question: "What is social media?" },
+			{ weight: 1, answer: "The logo, title art, and store banner that identify the game.", question: "What is key art?" },
 			{ weight: 2, answer: "A catchy one-liner like 'Minecraft meets horror.'", question: "What is a tagline?" },
 			{ weight: 3, answer: "Getting a YouTuber to play your game for their audience.", question: "What is influencer marketing?" },
 			{ weight: 4, answer: "The screenshots, description, and tags that sell the game on a store.", question: "What is the store listing?" },
@@ -244,13 +244,13 @@ const GAME_DATA = [
 			{ weight: 1, answer: "Researching which publishers or partners to approach.", question: "What is prospecting?" },
 			{ weight: 2, answer: "Listening first, then showing how your game solves their problem.", question: "What is value-based pitching?" },
 			{ weight: 3, answer: "Answering 'it's too expensive' without panicking.", question: "What is handling objections?" },
-			{ weight: 4, answer: "The polite follow-up email you send for the third time.", question: "What is hustle (following up)?" },
-			{ weight: 5, answer: "Awareness to consideration to purchase — the journey to a sale.", question: "What is the sales funnel (pipeline)?" },
+			{ weight: 4, answer: "The polite follow-up email you send for the third time.", question: "What is following up?" },
+			{ weight: 5, answer: "Awareness to consideration to purchase — the journey to a sale.", question: "What is the sales funnel?" },
 			{ weight: 1, answer: "The first email to a publisher who's never heard of you.", question: "What is cold outreach?" },
 			{ weight: 2, answer: "The short slide deck that sells your game to a publisher.", question: "What is a pitch deck?" },
 			{ weight: 3, answer: "When a publisher says 'we'll fund it if you add multiplayer.'", question: "What is negotiation?" },
-			{ weight: 4, answer: "The signed agreement splitting revenue between you and the publisher.", question: "What is the contract (deal)?" },
-			{ weight: 5, answer: "A player who loves the game so much they recruit their friends.", question: "What is an advocate (word of mouth)?" }
+			{ weight: 4, answer: "The signed agreement splitting revenue between you and the publisher.", question: "What is the contract?" },
+			{ weight: 5, answer: "A player who loves the game so much they recruit their friends.", question: "What is an advocate?" }
 		]
 	},
 	{
@@ -258,13 +258,13 @@ const GAME_DATA = [
 		clues: [
 			{ weight: 1, answer: "The dev team playing their own build to catch bugs early.", question: "What is internal testing?" },
 			{ weight: 2, answer: "Steps to reproduce, expected vs actual — a good one of these.", question: "What is a bug report?" },
-			{ weight: 3, answer: "Code that tests code, run automatically on every build.", question: "What are unit tests (automation)?" },
-			{ weight: 4, answer: "Watching real players struggle in a usability lab.", question: "What is external testing (playtesting)?" },
+			{ weight: 3, answer: "Code that tests code, run automatically on every build.", question: "What are unit tests?" },
+			{ weight: 4, answer: "Watching real players struggle in a usability lab.", question: "What is playtesting?" },
 			{ weight: 5, answer: "Helping players after launch — tickets, patches, refunds.", question: "What is player support?" },
 			{ weight: 1, answer: "Playing the game freely just to see what breaks.", question: "What is exploratory testing?" },
-			{ weight: 2, answer: "A bug so bad it crashes the game — highest priority.", question: "What is a blocker (critical bug)?" },
+			{ weight: 2, answer: "A bug so bad it crashes the game — highest priority.", question: "What is a blocker?" },
 			{ weight: 3, answer: "A group of target players giving feedback before launch.", question: "What is a focus group?" },
-			{ weight: 4, answer: "Showing two versions of a feature to see which players prefer.", question: "What is A/B (multivariate) testing?" },
+			{ weight: 4, answer: "Showing two versions of a feature to see which players prefer.", question: "What is A/B testing?" },
 			{ weight: 5, answer: "The hardware and OS details attached to every bug report.", question: "What are system specs?" }
 		]
 	},
@@ -276,7 +276,7 @@ const GAME_DATA = [
 			{ weight: 3, answer: "Turning game state into saveable data, like a save file.", question: "What is serialization?" },
 			{ weight: 4, answer: "Hunting down why the game crashes on level 3.", question: "What is debugging?" },
 			{ weight: 5, answer: "Measuring which code is slow instead of guessing.", question: "What is profiling?" },
-			{ weight: 1, answer: "Syncing players' positions over the internet.", question: "What is networking (multiplayer)?" },
+			{ weight: 1, answer: "Syncing players' positions over the internet.", question: "What is networking?" },
 			{ weight: 2, answer: "Running work on multiple CPU cores at once.", question: "What is threading?" },
 			{ weight: 3, answer: "Freeing what you no longer use so the game doesn't leak.", question: "What is memory management?" },
 			{ weight: 4, answer: "Where in code a variable's name is visible.", question: "What is scope?" },
@@ -291,7 +291,7 @@ const GAME_DATA = [
 			{ weight: 3, answer: "Version control — time travel for your code.", question: "What is Git?" },
 			{ weight: 4, answer: "A step-by-step recipe for solving a problem, like sorting.", question: "What is an algorithm?" },
 			{ weight: 5, answer: "A function that calls itself.", question: "What is recursion?" },
-			{ weight: 1, answer: "Translating code ahead of time vs. line-by-line at runtime.", question: "What is compiling vs. interpreting?" }
+			{ weight: 1, answer: "Translating code ahead of time instead of line-by-line at runtime.", question: "What is compiling?" }
 		]
 	}
 ];

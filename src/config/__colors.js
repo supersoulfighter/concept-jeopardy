@@ -10,6 +10,7 @@ CJ.PALETTE = {
 	AMBER:       '#ffcc00',
 	GREEN:       '#00aa00',
 	RED:         '#aa0000',
+	RED_BRIGHT:  '#ff5555',
 	LIME:        '#00ff00',
 	YELLOW:      '#ffff00',
 	YELLOW_SOFT: '#fffb00',
