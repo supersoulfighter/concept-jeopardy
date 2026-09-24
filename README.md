@@ -155,11 +155,11 @@ You now have your own copy of the game code.
 All the game code lives in the **`src`** folder (see it in VS Code's
 left sidebar):
 
-- **`src/_data.js`** — the trivia questions and answers
-- **`src/_config.js`** — colors, fonts, sizes, and layout
+- **`src/config/_data.js`** — the trivia questions and answers
+- **`src/config/`** — colors, fonts, sizes, and game settings
 - **`src/scenes/`** — the code that draws each screen
 
-Try it: open `src/_data.js`, change the text of one question, save the
+Try it: open `src/config/_data.js`, change the text of one question, save the
 file (**Ctrl+S**, or **Cmd+S** on Mac), and refresh your browser. Your
 change is live.
 

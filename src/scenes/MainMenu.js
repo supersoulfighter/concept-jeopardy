@@ -1,19 +1,27 @@
 class MainMenu extends Phaser.Scene {
+
+	// "CLICK TO START" prompt near the bottom of the splash image
+	static START_TEXT = {
+		BOTTOM: CJ.SPACING.XL, // distance up from the bottom edge
+		STYLE: { ...CJ.TYPE_LEVELS.H2, fill: CJ.PALETTE.WHITE },
+	};
+
+
 	constructor() {
 		super(CJ.SCENES.MENU);
 	}
 
+
 	create() {
-		const L = CJ.LAYOUT.MENU;
 		const cx = this.scale.width / 2;
 
-		this.add.image(cx, 0, CJ.ASSETS.SPLASH.key).setOrigin(0.5, 0);
+		this.add.image(cx, 0, CJ.IMAGES.SPLASH.key).setOrigin(0.5, 0);
 
 		this.add.text(
 			cx,
-			this.scale.height - L.START_BOTTOM,
+			this.scale.height - MainMenu.START_TEXT.BOTTOM,
 			'CLICK TO START',
-			{...CJ.UI.MENU_TITLE}
+			{...MainMenu.START_TEXT.STYLE}
 		).setOrigin(0.5);
 
 		this.input.once('pointerdown', () => {

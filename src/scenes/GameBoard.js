@@ -1,19 +1,72 @@
-// 2. The Main Jeopardy Board Scene
+// The Main Jeopardy Board Scene
 class GameBoard extends Phaser.Scene {
+
+	// Board grid parameters — the grid is COL_NUM x ROW_NUM and every
+	// dimension is derived from the screen size at scene start. Any of
+	// these can be overridden per launch via scene data (data.layout).
+	static GRID = {
+		COL_NUM: 5,               // categories per board
+		ROW_NUM: 5,               // clue tiles per category
+		MARGIN_X: CJ.SPACING.M,   // left/right margin around the grid
+		MARGIN_TOP: CJ.SPACING.L, // room for the score line
+		MARGIN_BOTTOM: CJ.SPACING.S,
+		MAX_CLUE_VALUE: 1000,     // dollar value of a max-weight clue
+		WEIGHT_MAX: 5,            // highest weight used in GAME_DATA
+	};
+
+	// Room photo behind the board
+	static BG_SCALE = 1.5;
+
+	// Score readout in the top-right corner
+	static SCORE_READOUT = {
+		MARGIN: CJ.SPACING.S,
+		STYLE: {
+			...CJ.TYPE_LEVELS.H5,
+			fontFamily: getFontFamilyName(700),
+			fill: CJ.PALETTE.LIME,
+		},
+	};
+
+	// Category header row above the tiles
+	static HEADER_ROW = {
+		PAD: CJ.SPACING.XS,
+		STYLE: {
+			...CJ.TYPE_LEVELS.P_BIG,
+			fill: CJ.PALETTE.YELLOW,
+			align: 'center',
+		},
+	};
+
+	// Clue tiles: padding, fill colors, and dollar-value text
+	static TILE = {
+		PAD: CJ.SPACING.XXXS,
+		COLOR: hexToInt(CJ.PALETTE.BLUE),
+		HOVER: hexToInt(CJ.PALETTE.BLUE_PURE),
+		VISITED: hexToInt(CJ.PALETTE.GRAY_DARK),
+		STYLE: {
+			...CJ.TYPE_LEVELS.H3,
+			fill: CJ.PALETTE.YELLOW_SOFT,
+			align: 'center',
+		},
+	};
+
+
 	constructor() {
 		super({ key: CJ.SCENES.BOARD });
 	}
+
 
 	init(data) {
 		// Track score across scene switches
 		this.score = data.score || 0;
 		this.visitedClues = data.visitedClues || [];
-		// Layout params: CJ.LAYOUT.BOARD defaults, overridable per launch
-		this.L = { ...CJ.LAYOUT.BOARD, ...data.layout };
+		// Grid params: GRID defaults, overridable per launch
+		this.L = { ...GameBoard.GRID, ...data.layout };
 		// The board is built once and passed back from Clue so the same
 		// random categories/clues persist for the whole game.
 		this.board = data.board || this.buildBoard();
 	}
+
 
 	// Randomly pick COL_NUM categories and up to ROW_NUM clues each.
 	// Within a column, weights never repeat and run lowest to highest.
@@ -38,19 +91,20 @@ class GameBoard extends Phaser.Scene {
 		});
 	}
 
+
 	create() {
 		const L = this.L;
 		const width = this.scale.width;
 		const height = this.scale.height;
 		const cx = width / 2;
 		const cy = height / 2;
-		this.add.image(cx, cy, CJ.ASSETS.ROOM.key).setOrigin(0.5).setScale(L.BG_SCALE);
+		this.add.image(cx, cy, CJ.IMAGES.ROOM.key).setOrigin(0.5).setScale(GameBoard.BG_SCALE);
 
 		this.scoreText = this.add.text(
-			width - L.SCORE_MARGIN,
-			L.SCORE_MARGIN,
+			width - GameBoard.SCORE_READOUT.MARGIN,
+			GameBoard.SCORE_READOUT.MARGIN,
 			`SCORE: $${this.score}`,
-			{ ...CJ.UI.SCORE }
+			{ ...GameBoard.SCORE_READOUT.STYLE }
 		).setOrigin(1, 0);
 
 		// Derive the grid from the screen size: one extra row for headers.
@@ -70,9 +124,9 @@ class GameBoard extends Phaser.Scene {
 				L.MARGIN_TOP + rowH / 2,
 				catData.category,
 				{
-					...CJ.UI.BOARD_HEADING,
+					...GameBoard.HEADER_ROW.STYLE,
 					fontSize: categorySize,
-					wordWrap: { width: colW - L.HEADER_PAD }
+					wordWrap: { width: colW - GameBoard.HEADER_ROW.PAD }
 				}
 			).setOrigin(0.5);
 
@@ -88,9 +142,9 @@ class GameBoard extends Phaser.Scene {
 				const tileBg = this.add.rectangle(
 					x,
 					y,
-					colW - L.TILE_PAD,
-					rowH - L.TILE_PAD,
-					isVisited ? CJ.COLORS.TILE_VISITED : CJ.COLORS.TILE
+					colW - GameBoard.TILE.PAD,
+					rowH - GameBoard.TILE.PAD,
+					isVisited ? GameBoard.TILE.VISITED : GameBoard.TILE.COLOR
 				);
 
 				// Draw Text Value
@@ -99,7 +153,7 @@ class GameBoard extends Phaser.Scene {
 					y,
 					isVisited ? '' : `$${clue.value}`,
 					{
-						...CJ.UI.BOARD_CELL,
+						...GameBoard.TILE.STYLE,
 						fontSize: pointsSize,
 					}
 				).setOrigin(0.5);
@@ -107,8 +161,8 @@ class GameBoard extends Phaser.Scene {
 				if (!isVisited) {
 					// Make Interactive
 					tileBg.setInteractive({ useHandCursor: true });
-					tileBg.on('pointerover', () => tileBg.setFillStyle(CJ.COLORS.TILE_HOVER));
-					tileBg.on('pointerout', () => tileBg.setFillStyle(CJ.COLORS.TILE));
+					tileBg.on('pointerover', () => tileBg.setFillStyle(GameBoard.TILE.HOVER));
+					tileBg.on('pointerout', () => tileBg.setFillStyle(GameBoard.TILE.COLOR));
 					tileBg.on('pointerdown', () => {
 						this.visitedClues.push(clueId);
 						// Launch the Clue overlay scene

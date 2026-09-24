@@ -1,28 +1,39 @@
 class Preloader extends Phaser.Scene {
+
+	// Loading progress bar: an outline plus a fill that grows with progress
+	static PROGRESS_BAR = {
+		W: 468,
+		H: 32,
+		PAD: CJ.SPACING.XXXS,
+		BORDER: 1, // stroke width, not spacing
+		COLOR: hexToInt(CJ.PALETTE.WHITE),
+	};
+
+
 	constructor() {
 		super(CJ.SCENES.PRELOADER);
 	}
 
 
 	init() {
-		const L = CJ.LAYOUT.PRELOADER;
+		const B = Preloader.PROGRESS_BAR;
 		//  A simple progress bar. This is the outline of the bar.
 		const cx = this.scale.width / 2;
 		const cy = this.scale.height / 2;
-		this.add.rectangle(cx, cy, L.BAR_W, L.BAR_H).setStrokeStyle(L.BORDER, CJ.COLORS.BAR);
+		this.add.rectangle(cx, cy, B.W, B.H).setStrokeStyle(B.BORDER, B.COLOR);
 		//  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-		const bar = this.add.rectangle(cx - (L.BAR_W / 2) + L.BAR_PAD, cy, L.BAR_PAD, L.BAR_H - L.BAR_PAD, CJ.COLORS.BAR);
+		const bar = this.add.rectangle(cx - (B.W / 2) + B.PAD, cy, B.PAD, B.H - B.PAD, B.COLOR);
 		//  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
 		this.load.on('progress', (progress) => {
-			//  Update the progress bar (the fill area is BAR_W - 2*BAR_PAD wide)
-			bar.width = L.BAR_PAD + ((L.BAR_W - 2 * L.BAR_PAD) * progress);
+			//  Update the progress bar (the fill area is W - 2*PAD wide)
+			bar.width = B.PAD + ((B.W - 2 * B.PAD) * progress);
 		});
 	}
 
 
 	preload() {
 		// BUG-desktop: load.setPath fails. Use full paths in CJ.ASSETS instead.
-		Object.values(CJ.ASSETS).forEach((asset) => {
+		Object.values(CJ.IMAGES).forEach((asset) => {
 			this.load.image(asset.key, asset.src);
 		});
 

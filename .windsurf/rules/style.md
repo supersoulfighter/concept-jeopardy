@@ -26,3 +26,5 @@ globs:
 - **Line length** — split objects, arrays, parameter lists, and chained
   calls across multiple lines unless the whole line fits in ~60 chars.
 - **Formatting** — tabs for indentation, single quotes, semicolons.
+- **Line spacing** — use 1 empty lines between fields, 2 between functions; and fields; 3 between classes or major sections
+- **Regions** — use IDE regions to organize long sections of code.
