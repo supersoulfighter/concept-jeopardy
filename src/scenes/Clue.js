@@ -160,4 +160,3 @@ class Clue extends Phaser.Scene {
 		});
 	}
 }
-

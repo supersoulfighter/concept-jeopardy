@@ -179,4 +179,3 @@ class GameBoard extends Phaser.Scene {
 		});
 	}
 }
-

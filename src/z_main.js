@@ -1,3 +1,4 @@
+// Initial game configuration
 const config = {
 	type: Phaser.AUTO,
 	width: CJ.GAME_WIDTH,
@@ -17,9 +18,5 @@ const config = {
 	],
 };
 
-// Bind the game to a top-level identifier
+// Create the game
 const game = new Phaser.Game(config);
-
-// document.addEventListener('DOMContentLoaded', () => {
-// 	new Game(config);
-// });
