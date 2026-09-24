@@ -242,7 +242,7 @@ nanoid@^3.3.18:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.19.tgz#336d4aa4bcd4fb24d2cddede7ffeae40bec03f0a"
   integrity sha512-Y2tUNy4ouw6tq5oDSKeQYGOyhkUBhNOcGV/02KC+6kd9eDGqdZd++mjMiIDilrBYvjEnCYvVtsuHCuP+okSfug==
 
-phaser@^4.2.1:
+phaser@4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/phaser/-/phaser-4.2.1.tgz#5512f23d348e6fb5c48ce71a9fbddd200ef919ea"
   integrity sha512-WUNwCPJpdjvZiuT6SgCfYVW8Qw/3j0jJ4ws7P2QkhFLFu74sbGuyHJcbFueGkY/AYO4Pi47bNQXn1OCJeLX//w==

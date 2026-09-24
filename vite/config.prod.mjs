@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import concat from '@vituum/vite-plugin-concat';
 
 const phasermsg = () => {
     return {
@@ -20,13 +21,6 @@ export default defineConfig({
     base: './',
     logLevel: 'warn',
     build: {
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    phaser: ['phaser']
-                }
-            }
-        },
         minify: 'terser',
         terserOptions: {
             compress: {
@@ -42,6 +36,10 @@ export default defineConfig({
         port: 8080
     },
     plugins: [
-        phasermsg()
+        phasermsg(),
+        concat({
+            files: { 'concept-jeopardy.js': ['src/**'] },
+            input: ['concept-jeopardy.js']
+        })
     ]
 });
