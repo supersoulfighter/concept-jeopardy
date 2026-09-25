@@ -35,7 +35,7 @@ class UIInput extends UIComponent {
 			0,
 			0,
 			'',
-			style.textStyle || {}
+			UI.textStyle(style)
 		);
 		this.label.setOrigin(0, 0.5);
 		this.add(this.label);
@@ -165,10 +165,11 @@ class UIInput extends UIComponent {
 		this.label.setText(showingPlaceholder ? this.placeholder : this.value);
 
 		// Placeholder text gets its own dimmer color
-		const fill = showingPlaceholder
+		// textColor lands on fill inside UI.textStyle()
+		const color = showingPlaceholder
 			? UI.pick(style, 'placeholderColor', UI.DEFAULT_PLACEHOLDER_COLOR)
-			: UI.pick(style.textStyle || {}, 'fill', '#ffffff');
-		this.label.setFill(fill);
+			: UI.pick(UI.textStyle(style), 'fill', '#ffffff');
+		this.label.setFill(color);
 
 		// Icons pin to the box edges, inside the padding
 		if (this.iconLeft) {
@@ -221,8 +222,11 @@ class UIInput extends UIComponent {
 	// Called by render() — restyle the text and icons, then re-place
 	// them since a state may have changed the font size.
 	applyStyle (style) {
-		if (!this.label) return; // render() runs before label exists
-		if (style.textStyle) this.label.setStyle(style.textStyle);
+		// render() runs before label exists, and the destroy-hook blur()
+		// can re-render after Phaser has already destroyed it — either
+		// way there's nothing to restyle.
+		if (!this.label || !this.label.active) return;
+		this.label.setStyle(UI.textStyle(style));
 		this.styleIcons(style);
 		this.refreshText();
 	}

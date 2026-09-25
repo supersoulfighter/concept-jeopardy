@@ -44,10 +44,8 @@ class UITest extends Phaser.Scene {
 		padding: CJ.SPACING.XXS,
 		// Icons render solid black — iconColor recolors them
 		iconColor: CJ.PALETTE.WHITE,
-		textStyle: {
-			...CJ.TYPE_LEVELS.P_BIG,
-			fill: CJ.PALETTE.WHITE,
-		},
+		...CJ.TYPE_LEVELS.P_BIG,
+		textColor: CJ.PALETTE.WHITE,
 
 		selected: { backgroundColor: CJ.PALETTE.GREEN },
 		hover:    { backgroundColor: CJ.PALETTE.BLUE_PURE },
@@ -58,7 +56,7 @@ class UITest extends Phaser.Scene {
 		},
 		disabled: {
 			backgroundColor: CJ.PALETTE.GRAY_DARK,
-			textStyle: { ...CJ.TYPE_LEVELS.P_BIG, fill: '#777777' },
+			textColor: '#777777',
 		},
 	};
 

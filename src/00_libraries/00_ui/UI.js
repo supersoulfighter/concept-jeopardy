@@ -27,6 +27,29 @@ const UI = {
 	DEFAULT_ICON_GAP: 8,
 	DEFAULT_PLACEHOLDER_COLOR: '#888888',
 
+	// Phaser TextStyle keys allowed at a style's top level —
+	// UI.textStyle() sweeps them up so configs stay flat:
+	//   style: { backgroundColor: '#fff', textColor: '#000' }
+	// backgroundColor and padding are absent — those already belong
+	// to the box, so text must set them inside textStyle instead.
+	// ('fill' is the real Phaser key for text color, but 'textColor'
+	// is clearer next to backgroundColor — see textStyle() below.)
+	TEXT_STYLE_KEYS: [
+		'fontFamily',
+		'fontSize',
+		'fontStyle',
+		'fontWeight',
+		'fill',
+		'color',
+		'align',
+		'stroke',
+		'strokeThickness',
+		'lineSpacing',
+		'wordWrap',
+		'maxLines',
+		'shadow',
+	],
+
 	//#endregion
 
 
@@ -58,6 +81,28 @@ const UI = {
 	// (|| would also swallow 0 and '', which are valid values here.)
 	pick (style, prop, fallback) {
 		return style[prop] === undefined ? fallback : style[prop];
+	},
+
+
+	// Pack a resolved style's text keys into a Phaser TextStyle
+	// object for setStyle()/add.text(). style.textStyle is still
+	// honored for props that collide with box keys — top-level
+	// keys win over it.
+	textStyle (style) {
+		const out = { ...(style.textStyle || {}) };
+		for (const key of UI.TEXT_STYLE_KEYS) {
+			if (style[key] !== undefined) out[key] = style[key];
+		}
+		// 'textColor' is our friendlier alias for Phaser's fill;
+		// it wins whether set at the top level or inside textStyle
+		if (style.textColor !== undefined) {
+			out.textColor = style.textColor;
+		}
+		if (out.textColor !== undefined) {
+			out.fill = out.textColor;
+			delete out.textColor; // Phaser doesn't know this key
+		}
+		return out;
 	}
 };
 
@@ -69,8 +114,10 @@ const UI = {
 // image), and re-renders whenever a state flag changes.
 //
 // Style keys:  backgroundColor, backgroundAlpha, borderColor,
-//              borderWidth, borderRadius, padding, image, textStyle,
-//              plus one sub-object per state (hover, selected, ...).
+//              borderWidth, borderRadius, padding, image, iconColor,
+//              plus any text prop (fill, fontSize, ...) promoted from
+//              TextStyle — see UI.TEXT_STYLE_KEYS — and one sub-object
+//              per state (hover, selected, ...).
 class UIComponent extends Phaser.GameObjects.Container {
 
 	//#region Constructor //////////////////////////////////////////////////////

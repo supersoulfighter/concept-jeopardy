@@ -1,62 +1,6 @@
 // The Main Jeopardy Board Scene
 class GameBoard extends Phaser.Scene {
 
-	//#region Configuration ////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////
-
-	// Board grid parameters — the grid is COL_NUM x ROW_NUM and every
-	// dimension is derived from the screen size at scene start. Any of
-	// these can be overridden per launch via scene data (data.layout).
-	static GRID = {
-		COL_NUM: 5,               // categories per board
-		ROW_NUM: 5,               // clue tiles per category
-		MARGIN_X: CJ.SPACING.M,   // left/right margin around the grid
-		MARGIN_TOP: CJ.SPACING.L, // room for the score line
-		MARGIN_BOTTOM: CJ.SPACING.S,
-		MAX_CLUE_VALUE: 1000,     // dollar value of a max-weight clue
-		WEIGHT_MAX: 5,            // highest weight used in GAME_DATA
-	};
-
-	// Room photo behind the board
-	static BG_SCALE = 1.5;
-
-	// Score readout in the top-right corner
-	static SCORE_READOUT = {
-		MARGIN: CJ.SPACING.S,
-		STYLE: {
-			...CJ.TYPE_LEVELS.H5,
-			fontStyle: '700', // bump the weight from H5's default 500
-			fill: CJ.PALETTE.LIME,
-		},
-	};
-
-	// Category header row above the tiles
-	static HEADER_ROW = {
-		PAD: CJ.SPACING.XS,
-		STYLE: {
-			...CJ.TYPE_LEVELS.P_BIG,
-			fill: CJ.PALETTE.YELLOW,
-			align: 'center',
-		},
-	};
-
-	// Clue tiles: padding, fill colors, and dollar-value text
-	static TILE = {
-		PAD: CJ.SPACING.XXXS,
-		COLOR: hexToInt(CJ.PALETTE.BLUE),
-		HOVER: hexToInt(CJ.PALETTE.BLUE_PURE),
-		VISITED: hexToInt(CJ.PALETTE.GRAY_DARK),
-		STYLE: {
-			...CJ.TYPE_LEVELS.H3,
-			fill: CJ.PALETTE.YELLOW_SOFT,
-			align: 'center',
-		},
-	};
-
-	//#endregion
-
-
-
 	//#region Constructor //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -75,8 +19,22 @@ class GameBoard extends Phaser.Scene {
 		// Track score across scene switches
 		this.score = data.score || 0;
 		this.visitedClues = data.visitedClues || [];
-		// Grid params: GRID defaults, overridable per launch
-		this.L = { ...GameBoard.GRID, ...data.layout };
+		// Grid parameters — the grid is COL_NUM x ROW_NUM and every
+		// dimension is derived from the screen size in create().
+		// data.layout can override any of these per launch.
+		this.GRID = {
+			COL_NUM: 5,               // categories per board
+			ROW_NUM: 5,               // clue tiles per category
+			MARGIN_X: CJ.SPACING.M,   // left/right margin around the grid
+			MARGIN_TOP: CJ.SPACING.L, // room for the score line
+			MARGIN_BOTTOM: CJ.SPACING.S,
+			MAX_CLUE_VALUE: 1000,     // dollar value of a max-weight clue
+			WEIGHT_MAX: 5,            // highest weight used in GAME_DATA
+			HEADER_FONT_ROW: 0.28,    // category text: fraction of row height
+			HEADER_FONT_COL: 0.12,    // category text: fraction of column width
+			TILE_FONT_SCALE: 0.45,    // tile $ value: fraction of row height
+			...data.layout,
+		};
 		// The board is built once and passed back from Clue so the same
 		// random categories/clues persist for the whole game.
 		this.board = data.board || this.buildBoard();
@@ -84,7 +42,7 @@ class GameBoard extends Phaser.Scene {
 
 
 	create() {
-		const L = this.L;
+		const G = this.GRID;
 		const width = this.scale.width;
 		const height = this.scale.height;
 		const cx = width / 2;
@@ -96,90 +54,91 @@ class GameBoard extends Phaser.Scene {
 			cx,
 			cy,
 			CJ.IMAGES.ROOM.key
-		).setOrigin(0.5).setScale(GameBoard.BG_SCALE);
+		).setOrigin(0.5).setScale(1.5); // zoom the room photo to fill
 
 
-		// Score readout //
-		this.scoreText = this.add.text(
-			width - GameBoard.SCORE_READOUT.MARGIN,
-			GameBoard.SCORE_READOUT.MARGIN,
-			`SCORE: $${this.score}`,
-			{
-				...GameBoard.SCORE_READOUT.STYLE,
-				// Red when the player is in the hole
-				fill: this.score < 0 ? CJ.PALETTE.RED_BRIGHT : CJ.PALETTE.LIME,
-			}
-		).setOrigin(1, 0);
+		// Score readout // 'top-right' pins that corner at the margin;
+		// red when the player is in the hole
+		this.scoreText = this.add.uiLabel({
+			x: width - CJ.SPACING.S,
+			y: CJ.SPACING.S,
+			align: 'top-right',
+			text: `SCORE: $${this.score}`,
+			style: {
+				...CJ.TYPE_LEVELS.H5,
+				fontStyle: '700', // bump the weight from H5's 500
+				textColor: this.score < 0
+					? CJ.PALETTE.RED_BRIGHT
+					: CJ.PALETTE.LIME,
+			},
+		});
 
 
 		// Grid //
 		// Derive from the screen size: one extra row for header.
-		const gridW = width - 2 * L.MARGIN_X;
-		const gridH = height - L.MARGIN_TOP - L.MARGIN_BOTTOM;
-		const colW = gridW / L.COL_NUM;
-		const rowH = gridH / (L.ROW_NUM + 1);
-		const categorySize = Math.min(rowH * 0.28, colW * 0.12);
-		const pointsSize = rowH * 0.45;
+		const gridW = width - 2 * G.MARGIN_X;
+		const gridH = height - G.MARGIN_TOP - G.MARGIN_BOTTOM;
+		const colW = gridW / G.COL_NUM;
+		const rowH = gridH / (G.ROW_NUM + 1);
+		// Font sizes follow the tile size: categories cap at the
+		// smaller of a row-based and column-based limit
+		const categorySize = Math.min(
+			rowH * G.HEADER_FONT_ROW,
+			colW * G.HEADER_FONT_COL
+		);
+		const pointsSize = rowH * G.TILE_FONT_SCALE;
 
 		this.board.forEach((catData, colIdx) => {
-			const x = L.MARGIN_X + (colIdx + 0.5) * colW;
+			const x = G.MARGIN_X + (colIdx + 0.5) * colW;
 
-			// Category Header //
-			this.add.text(
+			// Category Header // font size and wrap come from the
+			// grid math so categories shrink to fit their column
+			this.add.uiLabel({
 				x,
-				L.MARGIN_TOP + rowH / 2,
-				catData.category,
-				{
-					...GameBoard.HEADER_ROW.STYLE,
+				y: G.MARGIN_TOP + rowH / 2,
+				text: catData.category,
+				style: {
+					...CJ.TYPE_LEVELS.P_BIG,
+					textColor: CJ.PALETTE.YELLOW,
+					align: 'center',
 					fontSize: categorySize,
-					wordWrap: { width: colW - GameBoard.HEADER_ROW.PAD }
-				}
-			).setOrigin(0.5);
+					wordWrap: { width: colW - CJ.SPACING.XS },
+				},
+			});
 
 
 			// Tiles //
 			catData.clues.forEach((clue, rowIdx) => {
-				const y = L.MARGIN_TOP + (rowIdx + 1.5) * rowH;
+				const y = G.MARGIN_TOP + (rowIdx + 1.5) * rowH;
 				const clueId = `${colIdx}-${rowIdx}`;
 
 				// Check if this clue was already picked
 				const isVisited = this.visitedClues.includes(clueId);
 
 
-				// Tile Background //
-				const tileBg = this.add.rectangle(
+				// Tile // 'disabled' tiles get the gray visited look
+				// and a dead hit area automatically
+				this.add.uiButton({
 					x,
 					y,
-					colW - GameBoard.TILE.PAD,
-					rowH - GameBoard.TILE.PAD,
-					isVisited ? GameBoard.TILE.VISITED : GameBoard.TILE.COLOR
-				);
-
-
-				// Tile Text //
-				this.add.text(
-					x,
-					y,
-					isVisited ? '' : `$${clue.value}`,
-					{
-						...GameBoard.TILE.STYLE,
+					width: colW - CJ.SPACING.XXXS,
+					height: rowH - CJ.SPACING.XXXS,
+					text: isVisited ? '' : `$${clue.value}`,
+					disabled: isVisited,
+					style: {
+						...CJ.TYPE_LEVELS.H3,
+						textColor: CJ.PALETTE.YELLOW_SOFT,
+						align: 'center',
 						fontSize: pointsSize,
-					}
-				).setOrigin(0.5);
-
-
-				// Make Interactive
-				if (!isVisited) {
-					tileBg.setInteractive({ useHandCursor: true });
-					tileBg.on(
-						'pointerover',
-						() => tileBg.setFillStyle(GameBoard.TILE.HOVER)
-					);
-					tileBg.on(
-						'pointerout',
-						() => tileBg.setFillStyle(GameBoard.TILE.COLOR)
-					);
-					tileBg.on('pointerdown', () => {
+						backgroundColor: CJ.PALETTE.BLUE,
+						hover: {
+							backgroundColor: CJ.PALETTE.BLUE_PURE,
+						},
+						disabled: {
+							backgroundColor: CJ.PALETTE.GRAY_DARK,
+						},
+					},
+					onClick: () => {
 						this.visitedClues.push(clueId);
 						// Launch the Clue overlay scene
 						this.scene.start(CJ.SCENES.CLUE, {
@@ -187,10 +146,10 @@ class GameBoard extends Phaser.Scene {
 							score: this.score,
 							visitedClues: this.visitedClues,
 							board: this.board,
-							layout: this.L
+							layout: this.GRID
 						});
-					});
-				}
+					},
+				});
 			});
 		});
 	}
@@ -202,11 +161,11 @@ class GameBoard extends Phaser.Scene {
 	//#region Internals ////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
-	// Randomly pick COL_NUM categories and up to ROW_NUM clues each.
+	// Randomly pick L.COL_NUM categories and up to L.ROW_NUM clues each.
 	// Within a column, weights never repeat and run lowest to highest.
 	// Each clue gets a dollar value from its relative weight.
 	buildBoard() {
-		const L = this.L;
+		const L = this.GRID;
 		return pickRandom(GAME_DATA, L.COL_NUM).map((catData) => {
 			const byWeight = {};
 			catData.clues.forEach((clue) => {

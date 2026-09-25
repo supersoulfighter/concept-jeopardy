@@ -8,7 +8,31 @@
 // Icon align is 'inline' (rides beside the text) or 'edge' (pinned
 // to that side of the box). Leave out width/height to shrink-wrap
 // around the text + inline icons (+ padding).
+// config.align picks which part of the label sits at x/y — 'center'
+// (default), an edge ('left', 'top'...) or corner ('top-right'...).
 class UILabel extends UIComponent {
+
+	//#region Configuration ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
+	// How far x/y sits from the label's center for each align value,
+	// as a fraction of its width/height. 'top-right' means the
+	// label's top-right corner lands on x/y.
+	static ALIGN = {
+		'center':       [0, 0],
+		'left':         [0.5, 0],
+		'right':        [-0.5, 0],
+		'top':          [0, 0.5],
+		'bottom':       [0, -0.5],
+		'top-left':     [0.5, 0.5],
+		'top-right':    [-0.5, 0.5],
+		'bottom-left':  [0.5, -0.5],
+		'bottom-right': [-0.5, -0.5],
+	};
+
+	//#endregion
+
+
 
 	//#region Constructor //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
@@ -23,7 +47,7 @@ class UILabel extends UIComponent {
 			0,
 			0,
 			config.text || '',
-			style.textStyle || {}
+			UI.textStyle(style)
 		);
 		this.label.setOrigin(0.5);
 		this.add(this.label);
@@ -39,6 +63,11 @@ class UILabel extends UIComponent {
 				config.height || this.contentHeight() + pad * 2
 			);
 		}
+
+		// Shift the center so the aligned edge/corner lands on x/y
+		const shift = UILabel.ALIGN[config.align || 'center'];
+		this.x += this.width * shift[0];
+		this.y += this.height * shift[1];
 
 		this.layoutContent();
 		this.render();
@@ -59,7 +88,7 @@ class UILabel extends UIComponent {
 	applyStyle (style) {
 		// render() fires in the base constructor, before label exists
 		if (!this.label) return;
-		if (style.textStyle) this.label.setStyle(style.textStyle);
+		this.label.setStyle(UI.textStyle(style));
 		this.styleIcons(style);
 		this.layoutContent();
 	}

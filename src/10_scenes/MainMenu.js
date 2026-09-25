@@ -1,18 +1,5 @@
 class MainMenu extends Phaser.Scene {
 
-	//#region Configuration ////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////
-
-	// "CLICK TO START" prompt near the bottom of the splash image
-	static START_TEXT = {
-		BOTTOM: CJ.SPACING.XL, // distance up from the bottom edge
-		STYLE: { ...CJ.TYPE_LEVELS.H2, fill: CJ.PALETTE.WHITE },
-	};
-
-	//#endregion
-
-
-
 	//#region Constructor //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -38,17 +25,18 @@ class MainMenu extends Phaser.Scene {
 		).setOrigin(0.5, 0);
 
 
-		// Text //
-		this.add.text(
-			cx,
-			this.scale.height - MainMenu.START_TEXT.BOTTOM,
-			'CLICK TO START',
-			{...MainMenu.START_TEXT.STYLE}
-		).setOrigin(0.5);
+		// "CLICK TO START" prompt near the bottom of the splash
+		this.add.uiLabel({
+			x: cx,
+			y: this.scale.height - CJ.SPACING.XL,
+			text: 'CLICK TO START',
+			style: { ...CJ.TYPE_LEVELS.H2, textColor: CJ.PALETTE.WHITE },
+		});
 
 
-		// Click anywhere to proceed
-		this.input.once('pointerdown', () => {
+		// Click anywhere to proceed. pointerup (not pointerdown) so the
+		// release can't land on a board tile in the freshly-started scene.
+		this.input.once('pointerup', () => {
 			this.scene.start(CJ.SCENES.BOARD);
 		});
 	}

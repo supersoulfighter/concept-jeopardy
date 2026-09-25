@@ -32,7 +32,7 @@ class UIButton extends UIComponent {
 			0,
 			0,
 			config.text || '',
-			style.textStyle || {}
+			UI.textStyle(style)
 		);
 		this.label.setOrigin(0.5);
 		this.add(this.label);
@@ -114,7 +114,7 @@ class UIButton extends UIComponent {
 	// the row since a state may have changed the font size.
 	applyStyle (style) {
 		if (!this.label) return; // render() runs before label exists
-		if (style.textStyle) this.label.setStyle(style.textStyle);
+		this.label.setStyle(UI.textStyle(style));
 		this.styleIcons(style);
 		this.layoutContent();
 	}
