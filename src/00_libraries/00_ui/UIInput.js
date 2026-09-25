@@ -6,6 +6,7 @@
 //       iconLeft: 'search',   // pinned just inside the box edges
 //       onChange: (value, input) => { ... },
 //       onSubmit: (value, input) => { ... },   // fires on Enter
+//       sfx: { focus: 'focus', type: 'typing', submit: 'send' },
 //       style: { backgroundColor: '#fff', focused: {...} },
 //       add: true
 //   })
@@ -93,6 +94,7 @@ class UIInput extends UIComponent {
 		if (this.flags.disabled || this.flags.focused) return;
 		this.setFlag('focused', true);
 		this.cursor.setVisible(true);
+		UI.playSfx(this, 'focus');
 
 		// Blink by toggling cursor visibility every half second
 		this.blinkTimer = this.scene.time.addEvent({
@@ -136,6 +138,7 @@ class UIInput extends UIComponent {
 	// Handle one keypress while focused.
 	onTypeKey (event) {
 		if (event.key === 'Enter') {
+			UI.playSfx(this, 'submit');
 			if (this.onSubmit) this.onSubmit(this.value, this);
 			return;
 		}
@@ -153,6 +156,7 @@ class UIInput extends UIComponent {
 			this.value += event.key;
 		}
 		this.refreshText();
+		UI.playSfx(this, 'type');
 		if (this.onChange) this.onChange(this.value, this);
 	}
 

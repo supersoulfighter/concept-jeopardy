@@ -6,6 +6,7 @@
 //       iconRight: { key: 'arrow', size: 24, align: 'edge' },
 //       iconGap: 8, iconSize: 20,
 //       onClick: (btn) => { ... },
+//       sfx: { press: 'press', click: 'select', hover: 'hover' },
 //       style: { backgroundColor: '#ffcc00', iconColor: '#fff' },
 //       add: true
 //   })
@@ -97,13 +98,14 @@ class UIButton extends UIComponent {
 	// Press feedback: 'pressed' while the pointer is held down,
 	// onClick fires on release (pointerup) like a real button.
 	wirePress () {
-		this.on(
-			'pointerdown',
-			() => this.setFlag('pressed', true)
-		);
+		this.on('pointerdown', () => {
+			if (!this.flags.disabled) UI.playSfx(this, 'press');
+			this.setFlag('pressed', true);
+		});
 		this.on('pointerup', () => {
 			this.setFlag('pressed', false);
 			if (!this.flags.disabled && this.onClick) {
+				UI.playSfx(this, 'click');
 				this.onClick(this);
 			}
 		});

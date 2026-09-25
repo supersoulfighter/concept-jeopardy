@@ -37,6 +37,7 @@ class MainMenu extends Phaser.Scene {
 		// Click anywhere to proceed. pointerup (not pointerdown) so the
 		// release can't land on a board tile in the freshly-started scene.
 		this.input.once('pointerup', () => {
+			this.sound.play(CJ.SFX.SELECT.key);
 			this.scene.start(CJ.SCENES.BOARD);
 		});
 	}

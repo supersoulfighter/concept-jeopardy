@@ -103,6 +103,19 @@ const UI = {
 			delete out.textColor; // Phaser doesn't know this key
 		}
 		return out;
+	},
+
+
+	// Play one of the widget's sfx cue keys — sfx configs map
+	// interaction moments to sound keys: sfx: { press: 'press' }.
+	// Missing/unloaded keys fail silently so a scene that never
+	// loaded audio still works.
+	playSfx (component, moment) {
+		const key = component.sfx && component.sfx[moment];
+		if (!key) return;
+		if (component.scene.cache.audio.exists(key)) {
+			component.scene.sound.play(key);
+		}
 	}
 };
 
@@ -126,6 +139,7 @@ class UIComponent extends Phaser.GameObjects.Container {
 	constructor (scene, config) {
 		super(scene, config.x || 0, config.y || 0);
 		this.config = config;
+		this.sfx = config.sfx || {}; // moment -> sound key, see UI.playSfx
 
 		// Split the style into base values + per-state overrides
 		const split = UI.splitStyle(config.style || {});
@@ -454,7 +468,10 @@ class UIComponent extends Phaser.GameObjects.Container {
 
 	// Track the pointer to flip the hover flag on and off.
 	watchHover () {
-		this.on('pointerover', () => this.setFlag('hover', true));
+		this.on('pointerover', () => {
+			this.setFlag('hover', true);
+			UI.playSfx(this, 'hover');
+		});
 		this.on('pointerout', () => {
 			this.setFlag('hover', false);
 			this.setFlag('pressed', false);

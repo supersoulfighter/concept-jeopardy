@@ -125,6 +125,11 @@ class GameBoard extends Phaser.Scene {
 					height: rowH - CJ.SPACING.XXXS,
 					text: isVisited ? '' : `$${clue.value}`,
 					disabled: isVisited,
+					sfx: {
+						hover: CJ.SFX.HOVER.key,
+						press: CJ.SFX.PRESS.key,
+						click: CJ.SFX.SELECT.key,
+					},
 					style: {
 						...CJ.TYPE_LEVELS.H3,
 						textColor: CJ.PALETTE.YELLOW_SOFT,

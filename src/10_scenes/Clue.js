@@ -66,6 +66,11 @@ class Clue extends Phaser.Scene {
 			width: inputW,
 			height: inputH,
 			placeholder: 'Type your response...',
+			sfx: {
+				focus: CJ.SFX.FOCUS.key,
+				type: CJ.SFX.TYPE.key,
+				submit: CJ.SFX.SUBMIT.key,
+			},
 			style: {
 				...CJ.TYPE_LEVELS.P_BIG,
 				textColor: CJ.PALETTE.BLACK,
@@ -85,6 +90,11 @@ class Clue extends Phaser.Scene {
 			width: submitW,
 			height: inputH,
 			text: 'Submit',
+			sfx: {
+				hover: CJ.SFX.HOVER.key,
+				press: CJ.SFX.PRESS.key,
+				click: CJ.SFX.SELECT.key,
+			},
 			style: {
 				...CJ.TYPE_LEVELS.P_BIG,
 				textColor: CJ.PALETTE.BLACK,
@@ -107,7 +117,7 @@ class Clue extends Phaser.Scene {
 			hexToInt(CJ.PALETTE.AMBER)
 		).setOrigin(0, 0);
 		this.timer = this.time.delayedCall(
-			6000, // ms the player gets to respond
+			15000, // ms the player gets to respond
 			() => this.onTimeUp()
 		);
 
@@ -132,6 +142,8 @@ class Clue extends Phaser.Scene {
 	// reaching for the mouse.
 	onTypeKey(event) {
 		if (event.key === 'Enter' && this.submitted) {
+			// Same cue as the Continue button it stands in for
+			this.sound.play(CJ.SFX.SELECT.key);
 			this.returnToBoard();
 		}
 	}
@@ -139,6 +151,7 @@ class Clue extends Phaser.Scene {
 
 	// The countdown hit zero — same penalty as a wrong response.
 	onTimeUp() {
+		this.sound.play(CJ.SFX.EXPIRED.key);
 		this.finishRound(
 			'TIMES UP',
 			CJ.PALETTE.RED_BRIGHT,
@@ -160,6 +173,9 @@ class Clue extends Phaser.Scene {
 
 		const isCorrect = Clue.normalizeResponse(this.inputField.getValue())
 			=== Clue.normalizeResponse(this.clue.question);
+		this.sound.play(
+			isCorrect ? CJ.SFX.CORRECT.key : CJ.SFX.INCORRECT.key
+		);
 		this.finishRound(
 			isCorrect ? 'CORRECT!' : 'INCORRECT',
 			isCorrect ? CJ.PALETTE.LIME : CJ.PALETTE.RED_BRIGHT,
@@ -213,6 +229,11 @@ class Clue extends Phaser.Scene {
 			width: 200,
 			height: 50,
 			text: 'Continue',
+			sfx: {
+				hover: CJ.SFX.HOVER.key,
+				press: CJ.SFX.PRESS.key,
+				click: CJ.SFX.SELECT.key,
+			},
 			style: {
 				...CJ.TYPE_LEVELS.P_BIG,
 				textColor: CJ.PALETTE.BLACK,

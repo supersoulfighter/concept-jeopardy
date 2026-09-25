@@ -27,7 +27,12 @@ class GameOver extends Phaser.Scene {
 			cy,
 			this.scale.width,
 			this.scale.height,
-			hexToInt(score < 0 ? CJ.PALETTE.RED : CJ.PALETTE.GREENz)
+			hexToInt(score < 0 ? CJ.PALETTE.RED : CJ.PALETTE.GREEN)
+		);
+
+		// Win/loss jingle — negative score means the player lost
+		this.sound.play(
+			score < 0 ? CJ.SFX.LOSE.key : CJ.SFX.WIN.key
 		);
 
 
@@ -61,6 +66,11 @@ class GameOver extends Phaser.Scene {
 			width: 220,
 			height: 50,
 			text: 'Play Again',
+			sfx: {
+				hover: CJ.SFX.HOVER.key,
+				press: CJ.SFX.PRESS.key,
+				click: CJ.SFX.SELECT.key,
+			},
 			style: {
 				...CJ.TYPE_LEVELS.P_BIG,
 				textColor: CJ.PALETTE.BLACK,

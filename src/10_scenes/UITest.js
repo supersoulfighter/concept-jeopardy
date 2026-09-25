@@ -224,6 +224,11 @@ class UITest extends Phaser.Scene {
 			text: 'Click me',
 			// align:'edge' pins the icon to the right edge of the box
 			iconRight: { key: 'chevron-right', align: 'edge' },
+			sfx: {
+				hover: CJ.SFX.HOVER.key,
+				press: CJ.SFX.PRESS.key,
+				click: CJ.SFX.SELECT.key,
+			},
 			// Flips its own label — proves onClick and setText work
 			onClick: (btn) => btn.setText('Clicked!'),
 			style: UITest.DEMO_STYLE,
@@ -235,6 +240,11 @@ class UITest extends Phaser.Scene {
 			height: L.WIDGET_HEIGHT,
 			placeholder: 'Click, then type...',
 			iconLeft: 'search',
+			sfx: {
+				focus: CJ.SFX.FOCUS.key,
+				type: CJ.SFX.TYPE.key,
+				submit: CJ.SFX.SUBMIT.key,
+			},
 			style: UITest.DEMO_STYLE,
 		});
 	}

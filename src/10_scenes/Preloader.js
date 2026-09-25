@@ -108,6 +108,16 @@ class Preloader extends Phaser.Scene {
 				this.load.image(icon.key, icon.src);
 			}
 		});
+
+
+		// Sounds //
+		// Same full-path pattern as images (BUG-desktop: setPath fails).
+		// The browser only unlocks audio after a user gesture — Phaser's
+		// sound manager resumes the AudioContext on the first click
+		// automatically, so no extra unlock code is needed.
+		Object.values(CJ.SFX).forEach((asset) => {
+			this.load.audio(asset.key, asset.src);
+		});
 	}
 
 
