@@ -1,5 +1,8 @@
 class Preloader extends Phaser.Scene {
 
+	//#region Configuration ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	// Loading progress bar: an outline plus a fill that grows with progress
 	static PROGRESS_BAR = {
 		W: 468,
@@ -9,20 +12,41 @@ class Preloader extends Phaser.Scene {
 		COLOR: hexToInt(CJ.PALETTE.WHITE),
 	};
 
+	//#endregion
+
+
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	constructor() {
 		super(CJ.SCENES.PRELOADER);
 	}
 
+	//#endregion
+
+
+	//#region Events ///////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	init() {
 		const B = Preloader.PROGRESS_BAR;
 		//  A simple progress bar. This is the outline of the bar.
 		const cx = this.scale.width / 2;
 		const cy = this.scale.height / 2;
-		this.add.rectangle(cx, cy, B.W, B.H).setStrokeStyle(B.BORDER, B.COLOR);
+		this.add.rectangle(
+			cx,
+			cy,
+			B.W,
+			B.H
+		).setStrokeStyle(B.BORDER, B.COLOR);
 		//  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-		const bar = this.add.rectangle(cx - (B.W / 2) + B.PAD, cy, B.PAD, B.H - B.PAD, B.COLOR);
+		const bar = this.add.rectangle(
+			cx - (B.W / 2) + B.PAD,
+			cy,
+			B.PAD,
+			B.H - B.PAD,
+			B.COLOR
+		);
 		//  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
 		this.load.on('progress', (progress) => {
 			//  Update the progress bar (the fill area is W - 2*PAD wide)
@@ -54,7 +78,9 @@ class Preloader extends Phaser.Scene {
 					);
 					// load() fetches the file; fonts.add() registers it
 					this.fontPromises.push(
-						face.load().then((loaded) => document.fonts.add(loaded))
+						face.load().then(
+							(loaded) => document.fonts.add(loaded)
+						)
 					);
 				});
 			});
@@ -83,4 +109,6 @@ class Preloader extends Phaser.Scene {
 			.catch(() => {})
 			.finally(() => this.scene.start(CJ.SCENES.MENU));
 	}
+
+	//#endregion
 }

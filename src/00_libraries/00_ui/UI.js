@@ -7,16 +7,28 @@
 // it can be copied into any other Phaser project as-is.
 const UI = {
 
+	//#region Configuration ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	// Style keys that hold per-state overrides instead of plain values,
 	// like &:hover in CSS. resolveStyle() applies them in this order,
 	// so a later state wins when several flags are on at once.
-	STATES: ['selected', 'hover', 'pressed', 'focused', 'disabled'],
+	STATES: [
+		'selected',
+		'hover',
+		'pressed',
+		'focused',
+		'disabled',
+	],
 
 	// Fallbacks used when a config leaves them out
 	DEFAULT_PADDING: 12,
 	DEFAULT_ICON_SIZE: 20,
 	DEFAULT_ICON_GAP: 8,
 	DEFAULT_PLACEHOLDER_COLOR: '#888888',
+
+	//#endregion
+
 
 	// Phaser fills want numeric colors (0xffcc00) but our style configs
 	// use CSS strings ('#ffcc00'). ValueToColor accepts either.
@@ -61,6 +73,9 @@ const UI = {
 //              plus one sub-object per state (hover, selected, ...).
 class UIComponent extends Phaser.GameObjects.Container {
 
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	constructor (scene, config) {
 		super(scene, config.x || 0, config.y || 0);
 		this.config = config;
@@ -84,6 +99,8 @@ class UIComponent extends Phaser.GameObjects.Container {
 
 		this.render();
 	}
+
+	//#endregion
 
 
 	//#region State ////////////////////////////////////////////////////////////
@@ -171,16 +188,31 @@ class UIComponent extends Phaser.GameObjects.Container {
 			const alpha = UI.pick(style, 'backgroundAlpha', 1);
 			g.fillStyle(UI.color(style.backgroundColor), alpha);
 			if (radius > 0) {
-				g.fillRoundedRect(x, y, this.width, this.height, radius);
+				g.fillRoundedRect(
+					x,
+					y,
+					this.width,
+					this.height,
+					radius
+				);
 			} else {
 				g.fillRect(x, y, this.width, this.height);
 			}
 		}
 
 		if (style.borderColor !== undefined && style.borderWidth) {
-			g.lineStyle(style.borderWidth, UI.color(style.borderColor));
+			g.lineStyle(
+				style.borderWidth,
+				UI.color(style.borderColor)
+			);
 			if (radius > 0) {
-				g.strokeRoundedRect(x, y, this.width, this.height, radius);
+				g.strokeRoundedRect(
+					x,
+					y,
+					this.width,
+					this.height,
+					radius
+				);
 			} else {
 				g.strokeRect(x, y, this.width, this.height);
 			}
@@ -201,7 +233,9 @@ class UIComponent extends Phaser.GameObjects.Container {
 			this.setSize(this.bgImage.width, this.bgImage.height);
 		}
 		this.bgImage.setDisplaySize(this.width, this.height);
-		this.bgImage.setAlpha(UI.pick(style, 'backgroundAlpha', 1));
+		this.bgImage.setAlpha(
+			UI.pick(style, 'backgroundAlpha', 1)
+		);
 		this.bgImage.setVisible(true);
 	}
 
@@ -224,8 +258,16 @@ class UIComponent extends Phaser.GameObjects.Container {
 	// (sits in the text row, moves with the text) or 'edge' (pinned to
 	// its side of the box, padding away from the edge).
 	setupIcons (config) {
-		this.iconGap = UI.pick(config, 'iconGap', UI.DEFAULT_ICON_GAP);
-		this.iconSize = UI.pick(config, 'iconSize', UI.DEFAULT_ICON_SIZE);
+		this.iconGap = UI.pick(
+			config,
+			'iconGap',
+			UI.DEFAULT_ICON_GAP
+		);
+		this.iconSize = UI.pick(
+			config,
+			'iconSize',
+			UI.DEFAULT_ICON_SIZE
+		);
 		this.iconLeft = this.makeIcon(config.iconLeft);
 		this.iconRight = this.makeIcon(config.iconRight);
 	}
@@ -238,7 +280,12 @@ class UIComponent extends Phaser.GameObjects.Container {
 		const conf = (typeof iconConfig === 'string')
 			? { key: iconConfig }
 			: iconConfig;
-		const icon = this.scene.add.image(0, 0, conf.key, conf.frame);
+		const icon = this.scene.add.image(
+			0,
+			0,
+			conf.key,
+			conf.frame
+		);
 		// Scale to the target height, keeping the aspect ratio
 		const size = conf.size || this.iconSize;
 		icon.setScale(size / icon.height);
@@ -288,12 +335,16 @@ class UIComponent extends Phaser.GameObjects.Container {
 
 		if (this.isEdgeIcon(this.iconLeft)) {
 			this.iconLeft.setPosition(
-				-this.width / 2 + pad + this.iconLeft.displayWidth / 2, 0
+				-this.width / 2 + pad
+					+ this.iconLeft.displayWidth / 2,
+				0
 			);
 		}
 		if (this.isEdgeIcon(this.iconRight)) {
 			this.iconRight.setPosition(
-				this.width / 2 - pad - this.iconRight.displayWidth / 2, 0
+				this.width / 2 - pad
+					- this.iconRight.displayWidth / 2,
+				0
 			);
 		}
 

@@ -14,14 +14,26 @@
 // around text + inline icons.
 class UIButton extends UIComponent {
 
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	constructor (scene, config) {
 		super(scene, config);
 		const style = this.resolveStyle();
 
 		this.onClick = config.onClick;
-		this.padding = UI.pick(style, 'padding', UI.DEFAULT_PADDING);
+		this.padding = UI.pick(
+			style,
+			'padding',
+			UI.DEFAULT_PADDING
+		);
 
-		this.label = scene.add.text(0, 0, config.text || '', style.textStyle || {});
+		this.label = scene.add.text(
+			0,
+			0,
+			config.text || '',
+			style.textStyle || {}
+		);
 		this.label.setOrigin(0.5);
 		this.add(this.label);
 
@@ -45,8 +57,10 @@ class UIButton extends UIComponent {
 		this.render();
 	}
 
+	//#endregion
 
-	//#region Public setters ///////////////////////////////////////////////////
+
+	//#region Public API ///////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
 	setText (text) {
@@ -81,7 +95,10 @@ class UIButton extends UIComponent {
 	// Press feedback: 'pressed' while the pointer is held down,
 	// onClick fires on release (pointerup) like a real button.
 	wirePress () {
-		this.on('pointerdown', () => this.setFlag('pressed', true));
+		this.on(
+			'pointerdown',
+			() => this.setFlag('pressed', true)
+		);
 		this.on('pointerup', () => {
 			this.setFlag('pressed', false);
 			if (!this.flags.disabled && this.onClick) {

@@ -1,6 +1,9 @@
 // The Main Jeopardy Board Scene
 class GameBoard extends Phaser.Scene {
 
+	//#region Configuration ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	// Board grid parameters — the grid is COL_NUM x ROW_NUM and every
 	// dimension is derived from the screen size at scene start. Any of
 	// these can be overridden per launch via scene data (data.layout).
@@ -50,11 +53,21 @@ class GameBoard extends Phaser.Scene {
 		},
 	};
 
+	//#endregion
+
+
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	constructor() {
 		super({ key: CJ.SCENES.BOARD });
 	}
 
+	//#endregion
+
+
+	//#region Events ///////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	init(data) {
 		// Track score across scene switches
@@ -68,37 +81,17 @@ class GameBoard extends Phaser.Scene {
 	}
 
 
-	// Randomly pick COL_NUM categories and up to ROW_NUM clues each.
-	// Within a column, weights never repeat and run lowest to highest.
-	// Each clue gets a dollar value from its relative weight.
-	buildBoard() {
-		const L = this.L;
-		return pickRandom(GAME_DATA, L.COL_NUM).map((catData) => {
-			const byWeight = {};
-			catData.clues.forEach((clue) => {
-				(byWeight[clue.weight] = byWeight[clue.weight] || []).push(clue);
-			});
-			const weights = pickRandom(Object.keys(byWeight), L.ROW_NUM)
-				.map(Number)
-				.sort((a, b) => a - b);
-			return {
-				category: catData.category,
-				clues: weights.map((w) => ({
-					...pickRandom(byWeight[w], 1)[0],
-					value: Math.round(w * (L.MAX_CLUE_VALUE / L.WEIGHT_MAX)),
-				})),
-			};
-		});
-	}
-
-
 	create() {
 		const L = this.L;
 		const width = this.scale.width;
 		const height = this.scale.height;
 		const cx = width / 2;
 		const cy = height / 2;
-		this.add.image(cx, cy, CJ.IMAGES.ROOM.key).setOrigin(0.5).setScale(GameBoard.BG_SCALE);
+		this.add.image(
+			cx,
+			cy,
+			CJ.IMAGES.ROOM.key
+		).setOrigin(0.5).setScale(GameBoard.BG_SCALE);
 
 		this.scoreText = this.add.text(
 			width - GameBoard.SCORE_READOUT.MARGIN,
@@ -165,8 +158,14 @@ class GameBoard extends Phaser.Scene {
 				if (!isVisited) {
 					// Make Interactive
 					tileBg.setInteractive({ useHandCursor: true });
-					tileBg.on('pointerover', () => tileBg.setFillStyle(GameBoard.TILE.HOVER));
-					tileBg.on('pointerout', () => tileBg.setFillStyle(GameBoard.TILE.COLOR));
+					tileBg.on(
+						'pointerover',
+						() => tileBg.setFillStyle(GameBoard.TILE.HOVER)
+					);
+					tileBg.on(
+						'pointerout',
+						() => tileBg.setFillStyle(GameBoard.TILE.COLOR)
+					);
 					tileBg.on('pointerdown', () => {
 						this.visitedClues.push(clueId);
 						// Launch the Clue overlay scene
@@ -182,4 +181,35 @@ class GameBoard extends Phaser.Scene {
 			});
 		});
 	}
+
+	//#endregion
+
+
+	//#region Internals ////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
+	// Randomly pick COL_NUM categories and up to ROW_NUM clues each.
+	// Within a column, weights never repeat and run lowest to highest.
+	// Each clue gets a dollar value from its relative weight.
+	buildBoard() {
+		const L = this.L;
+		return pickRandom(GAME_DATA, L.COL_NUM).map((catData) => {
+			const byWeight = {};
+			catData.clues.forEach((clue) => {
+				(byWeight[clue.weight] = byWeight[clue.weight] || []).push(clue);
+			});
+			const weights = pickRandom(Object.keys(byWeight), L.ROW_NUM)
+				.map(Number)
+				.sort((a, b) => a - b);
+			return {
+				category: catData.category,
+				clues: weights.map((w) => ({
+					...pickRandom(byWeight[w], 1)[0],
+					value: Math.round(w * (L.MAX_CLUE_VALUE / L.WEIGHT_MAX)),
+				})),
+			};
+		});
+	}
+
+	//#endregion
 }

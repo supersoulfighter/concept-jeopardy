@@ -10,13 +10,21 @@
 // around the text + inline icons (+ padding).
 class UILabel extends UIComponent {
 
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	constructor (scene, config) {
 		super(scene, config);
 		const style = this.resolveStyle();
 
 		this.padding = UI.pick(style, 'padding', 0);
 
-		this.label = scene.add.text(0, 0, config.text || '', style.textStyle || {});
+		this.label = scene.add.text(
+			0,
+			0,
+			config.text || '',
+			style.textStyle || {}
+		);
 		this.label.setOrigin(0.5);
 		this.add(this.label);
 
@@ -35,6 +43,8 @@ class UILabel extends UIComponent {
 		this.layoutContent();
 		this.render();
 	}
+
+	//#endregion
 
 
 	setText (text) {

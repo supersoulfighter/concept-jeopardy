@@ -12,6 +12,9 @@
 // Printable keys append, Backspace deletes, Enter submits, Escape blurs.
 class UIInput extends UIComponent {
 
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	constructor (scene, config) {
 		super(scene, config);
 		const style = this.resolveStyle();
@@ -21,16 +24,35 @@ class UIInput extends UIComponent {
 		this.maxLength = config.maxLength || 0; // 0 = no limit
 		this.onChange = config.onChange;
 		this.onSubmit = config.onSubmit;
-		this.padding = UI.pick(style, 'padding', UI.DEFAULT_PADDING);
+		this.padding = UI.pick(
+			style,
+			'padding',
+			UI.DEFAULT_PADDING
+		);
 
 		// The typed text, left-aligned inside the box
-		this.label = scene.add.text(0, 0, '', style.textStyle || {});
+		this.label = scene.add.text(
+			0,
+			0,
+			'',
+			style.textStyle || {}
+		);
 		this.label.setOrigin(0, 0.5);
 		this.add(this.label);
 
 		// The text cursor is just a thin rectangle that blinks
-		const cursorColor = UI.pick(style, 'cursorColor', '#ffffff');
-		this.cursor = scene.add.rectangle(0, 0, 2, 20, UI.color(cursorColor));
+		const cursorColor = UI.pick(
+			style,
+			'cursorColor',
+			'#ffffff'
+		);
+		this.cursor = scene.add.rectangle(
+			0,
+			0,
+			2,
+			20,
+			UI.color(cursorColor)
+		);
 		this.cursor.setOrigin(0, 0.5);
 		this.cursor.setVisible(false);
 		this.add(this.cursor);
@@ -57,6 +79,8 @@ class UIInput extends UIComponent {
 
 		this.render();
 	}
+
+	//#endregion
 
 
 	//#region Focus ////////////////////////////////////////////////////////////
@@ -92,7 +116,10 @@ class UIInput extends UIComponent {
 			this.blinkTimer = null;
 		}
 		if (this.keyHandler) {
-			this.scene.input.keyboard.off('keydown', this.keyHandler);
+			this.scene.input.keyboard.off(
+				'keydown',
+				this.keyHandler
+			);
 			this.keyHandler = null;
 		}
 		return this;

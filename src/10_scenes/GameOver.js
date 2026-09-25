@@ -1,6 +1,9 @@
 // The Game Over Scene — shown once every clue has been visited
 class GameOver extends Phaser.Scene {
 
+	//#region Configuration ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	// Full-screen background: red for a losing score, green otherwise
 	static BACKGROUND = {
 		WIN_COLOR: hexToInt(CJ.PALETTE.GREEN),
@@ -25,14 +28,27 @@ class GameOver extends Phaser.Scene {
 		W: 220,
 		H: 50,
 		COLOR: hexToInt(CJ.PALETTE.WHITE),
-		STYLE: { ...CJ.TYPE_LEVELS.P_BIG, fill: CJ.PALETTE.BLACK },
+		STYLE: {
+			...CJ.TYPE_LEVELS.P_BIG,
+			fill: CJ.PALETTE.BLACK,
+		},
 	};
 
+	//#endregion
+
+
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	constructor() {
 		super({key: CJ.SCENES.GAMEOVER});
 	}
 
+	//#endregion
+
+
+	//#region Events ///////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	create(data) {
 		const score = data.score || 0;
@@ -74,4 +90,6 @@ class GameOver extends Phaser.Scene {
 			});
 		});
 	}
+
+	//#endregion
 }

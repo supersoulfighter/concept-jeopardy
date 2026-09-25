@@ -1,21 +1,38 @@
 class MainMenu extends Phaser.Scene {
 
+	//#region Configuration ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	// "CLICK TO START" prompt near the bottom of the splash image
 	static START_TEXT = {
 		BOTTOM: CJ.SPACING.XL, // distance up from the bottom edge
 		STYLE: { ...CJ.TYPE_LEVELS.H2, fill: CJ.PALETTE.WHITE },
 	};
 
+	//#endregion
+
+
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	constructor() {
 		super(CJ.SCENES.MENU);
 	}
 
+	//#endregion
+
+
+	//#region Events ///////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	create() {
 		const cx = this.scale.width / 2;
 
-		this.add.image(cx, 0, CJ.IMAGES.SPLASH.key).setOrigin(0.5, 0);
+		this.add.image(
+			cx,
+			0,
+			CJ.IMAGES.SPLASH.key
+		).setOrigin(0.5, 0);
 
 		this.add.text(
 			cx,
@@ -28,4 +45,6 @@ class MainMenu extends Phaser.Scene {
 			this.scene.start(CJ.SCENES.BOARD);
 		});
 	}
+
+	//#endregion
 }

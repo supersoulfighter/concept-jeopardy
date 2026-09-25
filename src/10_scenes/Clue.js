@@ -1,6 +1,9 @@
 // The Active Clue Overlay Scene
 class Clue extends Phaser.Scene {
 
+	//#region Configuration ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	// Big blue panel behind the clue text
 	static BACKGROUND = {
 		W: CJ.GAME_WIDTH,
@@ -26,7 +29,10 @@ class Clue extends Phaser.Scene {
 		COLOR: hexToInt(CJ.PALETTE.WHITE),
 		PLACEHOLDER: 'Type your response...',
 		PLACEHOLDER_FILL: CJ.PALETTE.GRAY_DARK,
-		STYLE: { ...CJ.TYPE_LEVELS.P_BIG, fill: CJ.PALETTE.BLACK },
+		STYLE: {
+			...CJ.TYPE_LEVELS.P_BIG,
+			fill: CJ.PALETTE.BLACK,
+		},
 	};
 
 	// Button immediately right of the input that submits the response
@@ -34,14 +40,23 @@ class Clue extends Phaser.Scene {
 		W: 120,
 		H: 50,
 		COLOR: hexToInt(CJ.PALETTE.AMBER),
-		STYLE: { ...CJ.TYPE_LEVELS.P_BIG, fill: CJ.PALETTE.BLACK },
+		STYLE: {
+			...CJ.TYPE_LEVELS.P_BIG,
+			fill: CJ.PALETTE.BLACK,
+		},
 	};
 
 	// Correct / incorrect verdict shown after submitting
 	static RESULT = {
 		DY: CJ.SPACING.XS,
-		CORRECT_STYLE: { ...CJ.TYPE_LEVELS.H4, fill: CJ.PALETTE.LIME },
-		WRONG_STYLE: { ...CJ.TYPE_LEVELS.H4, fill: CJ.PALETTE.RED_BRIGHT },
+		CORRECT_STYLE: {
+			...CJ.TYPE_LEVELS.H4,
+			fill: CJ.PALETTE.LIME,
+		},
+		WRONG_STYLE: {
+			...CJ.TYPE_LEVELS.H4,
+			fill: CJ.PALETTE.RED_BRIGHT,
+		},
 	};
 
 	// The right "question", revealed after submitting
@@ -61,7 +76,10 @@ class Clue extends Phaser.Scene {
 		W: 200,
 		H: 50,
 		COLOR: hexToInt(CJ.PALETTE.AMBER),
-		STYLE: { ...CJ.TYPE_LEVELS.P_BIG, fill: CJ.PALETTE.BLACK },
+		STYLE: {
+			...CJ.TYPE_LEVELS.P_BIG,
+			fill: CJ.PALETTE.BLACK,
+		},
 	};
 
 	// Countdown bar along the bottom edge — shrinks to zero
@@ -71,11 +89,21 @@ class Clue extends Phaser.Scene {
 		COLOR: hexToInt(CJ.PALETTE.AMBER),
 	};
 
+	//#endregion
+
+
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	constructor() {
 		super({key: CJ.SCENES.CLUE});
 	}
 
+	//#endregion
+
+
+	//#region Events ///////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	create(data) {
 		this.clue = data.clue;
@@ -92,7 +120,13 @@ class Clue extends Phaser.Scene {
 		const cy = this.scale.height / 2;
 
 		// Big blue background for the clue
-		this.add.rectangle(cx, cy, Clue.BACKGROUND.W, Clue.BACKGROUND.H, Clue.BACKGROUND.COLOR);
+		this.add.rectangle(
+			cx,
+			cy,
+			Clue.BACKGROUND.W,
+			Clue.BACKGROUND.H,
+			Clue.BACKGROUND.COLOR
+		);
 
 		// Display Clue Prompt
 		this.promptText = this.add.text(
@@ -114,9 +148,19 @@ class Clue extends Phaser.Scene {
 		const inputY = cy + I.DY;
 
 		// Input field: a white box with the typed text on top
-		this.inputBox = this.add.rectangle(inputX, inputY, I.W, I.H, I.COLOR);
-		this.inputText = this.add.text(inputX, inputY, '', I.STYLE)
-			.setOrigin(0.5);
+		this.inputBox = this.add.rectangle(
+			inputX,
+			inputY,
+			I.W,
+			I.H,
+			I.COLOR
+		);
+		this.inputText = this.add.text(
+			inputX,
+			inputY,
+			'',
+			I.STYLE
+		).setOrigin(0.5);
 		this.refreshInputText();
 
 		// Submit button immediately right of the field
@@ -126,18 +170,31 @@ class Clue extends Phaser.Scene {
 		this.submitText = this.add.text(
 			submitX, inputY, 'Submit', { ...S.STYLE }
 		).setOrigin(0.5);
-		this.submitBtn.on('pointerdown', () => this.submitResponse());
+		this.submitBtn.on(
+			'pointerdown',
+			() => this.submitResponse()
+		);
 
 		// Typing: printable keys append, Backspace deletes, Enter submits
-		this.input.keyboard.on('keydown', (event) => this.onTypeKey(event));
+		this.input.keyboard.on(
+			'keydown',
+			(event) => this.onTypeKey(event)
+		);
 
 		// Countdown: a bar that shrinks to zero in TIMER.MS milliseconds.
 		// delayedCall fires onTimeUp once; update() animates the bar.
 		const T = Clue.TIMER;
 		this.timerBar = this.add.rectangle(
-			0, this.scale.height - T.H, this.scale.width, T.H, T.COLOR
+			0,
+			this.scale.height - T.H,
+			this.scale.width,
+			T.H,
+			T.COLOR
 		).setOrigin(0, 0);
-		this.timer = this.time.delayedCall(T.MS, () => this.onTimeUp());
+		this.timer = this.time.delayedCall(
+			T.MS,
+			() => this.onTimeUp()
+		);
 	}
 
 
@@ -171,32 +228,6 @@ class Clue extends Phaser.Scene {
 	}
 
 
-	// Show the typed text, or the gray placeholder when empty.
-	refreshInputText() {
-		const I = Clue.INPUT;
-		this.inputText.setText(this.response || I.PLACEHOLDER);
-		this.inputText.setFill(
-			this.response ? I.STYLE.fill : I.PLACEHOLDER_FILL
-		);
-	}
-
-
-	// Reduce a Jeopardy "question" (or the player's typed response) to
-	// the part that matters: drops the "What/Who/When is/are" prefix,
-	// accent marks, punctuation, articles, whitespace, and case — so
-	// "Pokémon" matches "pokemon" and "What is Mario?" matches "mario".
-	static normalizeResponse(str) {
-		return str
-			.toLowerCase()
-			.normalize('NFD').replace(/[̀-ͯ]/g, '') // strip accent marks
-			.replace(/^(what|who|when)\s+(is|are)\s+/, '')
-			.replace(/[^a-z0-9\s]/g, '')
-			.split(/\s+/)
-			.filter((w) => w && !['a', 'an', 'the'].includes(w))
-			.join('');
-	}
-
-
 	// Check the response against the clue's "question" and show the verdict.
 	submitResponse() {
 		if (this.submitted) return;
@@ -214,7 +245,11 @@ class Clue extends Phaser.Scene {
 
 	// The countdown hit zero — same penalty as a wrong response.
 	onTimeUp() {
-		this.finishRound('TIMES UP', Clue.RESULT.WRONG_STYLE, -this.clue.value);
+		this.finishRound(
+			'TIMES UP',
+			Clue.RESULT.WRONG_STYLE,
+			-this.clue.value
+		);
 	}
 
 
@@ -235,14 +270,23 @@ class Clue extends Phaser.Scene {
 		this.submitBtn.destroy();
 		this.submitText.destroy();
 
-		this.add.text(cx, cy + Clue.RESULT.DY, verdict, verdictStyle)
-			.setOrigin(0.5);
+		this.add.text(
+			cx,
+			cy + Clue.RESULT.DY,
+			verdict,
+			verdictStyle
+		).setOrigin(0.5);
 
 		// Reveal the right "question"
-		this.add.text(cx, cy + Clue.ANSWER.DY, this.clue.question, {
-			...Clue.ANSWER.STYLE,
-			wordWrap: {width: Clue.BACKGROUND.TEXT_WRAP}
-		}).setOrigin(0.5);
+		this.add.text(
+			cx,
+			cy + Clue.ANSWER.DY,
+			this.clue.question,
+			{
+				...Clue.ANSWER.STYLE,
+				wordWrap: { width: Clue.BACKGROUND.TEXT_WRAP }
+			}
+		).setOrigin(0.5);
 
 		const B = Clue.CONTINUE_BTN;
 		const continueBtn = this.add.rectangle(
@@ -276,4 +320,37 @@ class Clue extends Phaser.Scene {
 			layout: this.layout
 		});
 	}
+
+	//#endregion
+
+
+	//#region Internals ////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
+	// Show the typed text, or the gray placeholder when empty.
+	refreshInputText() {
+		const I = Clue.INPUT;
+		this.inputText.setText(this.response || I.PLACEHOLDER);
+		this.inputText.setFill(
+			this.response ? I.STYLE.fill : I.PLACEHOLDER_FILL
+		);
+	}
+
+
+	// Reduce a Jeopardy "question" (or the player's typed response) to
+	// the part that matters: drops the "What/Who/When is/are" prefix,
+	// accent marks, punctuation, articles, whitespace, and case — so
+	// "Pokémon" matches "pokemon" and "What is Mario?" matches "mario".
+	static normalizeResponse(str) {
+		return str
+			.toLowerCase()
+			.normalize('NFD').replace(/[̀-ͯ]/g, '') // strip accent marks
+			.replace(/^(what|who|when)\s+(is|are)\s+/, '')
+			.replace(/[^a-z0-9\s]/g, '')
+			.split(/\s+/)
+			.filter((w) => w && !['a', 'an', 'the'].includes(w))
+			.join('');
+	}
+
+	//#endregion
 }

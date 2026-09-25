@@ -6,9 +6,17 @@
 // clicking, and typing.
 class UITest extends Phaser.Scene {
 
+	//#region Configuration ////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
 	// One column per state flag. 'normal' means no flags turned on.
 	static COLUMNS = [
-		'normal', 'selected', 'hover', 'pressed', 'focused', 'disabled'
+		'normal',
+		'selected',
+		'hover',
+		'pressed',
+		'focused',
+		'disabled'
 	];
 
 	// One row per component — matches the this.add.* names the factory
@@ -36,7 +44,10 @@ class UITest extends Phaser.Scene {
 		padding: CJ.SPACING.XXS,
 		// Icons render solid black — iconColor recolors them
 		iconColor: CJ.PALETTE.WHITE,
-		textStyle: { ...CJ.TYPE_LEVELS.P_BIG, fill: CJ.PALETTE.WHITE },
+		textStyle: {
+			...CJ.TYPE_LEVELS.P_BIG,
+			fill: CJ.PALETTE.WHITE,
+		},
 
 		selected: { backgroundColor: CJ.PALETTE.GREEN },
 		hover:    { backgroundColor: CJ.PALETTE.BLUE_PURE },
@@ -51,11 +62,21 @@ class UITest extends Phaser.Scene {
 		},
 	};
 
+	//#endregion
+
+
+	//#region Constructor //////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	constructor () {
 		super({ key: CJ.SCENES.UI_TEST });
 	}
 
+	//#endregion
+
+
+	//#region Events ///////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	create () {
 		const L = UITest.LAYOUT;
@@ -80,6 +101,8 @@ class UITest extends Phaser.Scene {
 		this.buildMatrix();
 		this.buildLiveRow();
 	}
+
+	//#endregion
 
 
 	//#region Matrix ///////////////////////////////////////////////////////////

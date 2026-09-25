@@ -19,7 +19,9 @@
 		Phaser.GameObjects.GameObjectFactory.register(
 			name,
 			function (config) {
-				return this.displayList.add(new Klass(this.scene, config));
+				return this.displayList.add(
+					new Klass(this.scene, config)
+				);
 			}
 		);
 
@@ -31,7 +33,11 @@
 				if (config === undefined) config = {};
 				if (addToScene !== undefined) config.add = addToScene;
 				const obj = new Klass(this.scene, config);
-				Phaser.GameObjects.BuildGameObject(this.scene, obj, config);
+				Phaser.GameObjects.BuildGameObject(
+					this.scene,
+					obj,
+					config
+				);
 				return obj;
 			}
 		);

@@ -53,13 +53,49 @@ CJ.fontFile = (font, file, weight) =>
 // canvas font string as "<fontStyle> <fontSize> <fontFamily>", and
 // the browser matches the weight against the loaded FontFaces.
 CJ.TYPE_LEVELS = {
-	H1:      { fontFamily: CJ.FONT_FAMILY, fontStyle: '800', fontSize: CJ.FONT_SIZE.XXXL },
-	H2:      { fontFamily: CJ.FONT_FAMILY, fontStyle: '700', fontSize: CJ.FONT_SIZE.XXL },
-	H3:      { fontFamily: CJ.FONT_FAMILY, fontStyle: '700', fontSize: CJ.FONT_SIZE.XL },
-	H4:      { fontFamily: CJ.FONT_FAMILY, fontStyle: '600', fontSize: CJ.FONT_SIZE.L },
-	H5:      { fontFamily: CJ.FONT_FAMILY, fontStyle: '500', fontSize: CJ.FONT_SIZE.M },
-	H6:      { fontFamily: CJ.FONT_FAMILY, fontStyle: '500', fontSize: CJ.FONT_SIZE.S },
-	P_BIG:   { fontFamily: CJ.FONT_FAMILY, fontStyle: '400', fontSize: CJ.FONT_SIZE.M },
-	P:       { fontFamily: CJ.FONT_FAMILY, fontStyle: '400', fontSize: CJ.FONT_SIZE.S },
-	P_SMALL: { fontFamily: CJ.FONT_FAMILY, fontStyle: '400', fontSize: CJ.FONT_SIZE.XS },
+	H1: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '800',
+		fontSize: CJ.FONT_SIZE.XXXL,
+	},
+	H2: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '700',
+		fontSize: CJ.FONT_SIZE.XXL,
+	},
+	H3: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '700',
+		fontSize: CJ.FONT_SIZE.XL,
+	},
+	H4: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '600',
+		fontSize: CJ.FONT_SIZE.L,
+	},
+	H5: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '500',
+		fontSize: CJ.FONT_SIZE.M,
+	},
+	H6: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '500',
+		fontSize: CJ.FONT_SIZE.S,
+	},
+	P_BIG: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '400',
+		fontSize: CJ.FONT_SIZE.M,
+	},
+	P: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '400',
+		fontSize: CJ.FONT_SIZE.S,
+	},
+	P_SMALL: {
+		fontFamily: CJ.FONT_FAMILY,
+		fontStyle: '400',
+		fontSize: CJ.FONT_SIZE.XS,
+	},
 };
