@@ -111,7 +111,7 @@ class GameBoard extends Phaser.Scene {
 			}
 		).setOrigin(1, 0);
 
-		// Derive the grid from the screen size: one extra row for headers.
+		// Derive the grid from the screen size: one extra row for header.
 		const gridW = width - 2 * L.MARGIN_X;
 		const gridH = height - L.MARGIN_TOP - L.MARGIN_BOTTOM;
 		const colW = gridW / L.COL_NUM;

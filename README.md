@@ -155,12 +155,19 @@ You now have your own copy of the game code.
 All the game code lives in the **`src`** folder (see it in VS Code's
 left sidebar):
 
-- **`src/config/_data.js`** — the trivia questions and answers
-- **`src/config/`** — colors, fonts, sizes, and game settings
-- **`src/scenes/`** — the code that draws each screen
+- **`src/00_libraries/00_ui/`** — reusable UI pieces (labels, buttons, inputs)
+- **`src/01_global/`** — shared helpers and settings everything else uses
+- **`src/02_config/`** — colors, fonts, sizes, and game settings
+- **`src/03_data/data.js`** — the trivia questions and answers
+- **`src/10_scenes/`** — the code that draws each screen
+- **`src/main.js`** — the entry file that starts the game
 
-Try it: open `src/config/_data.js`, change the text of one question, save the
-file (**Ctrl+S**, or **Cmd+S** on Mac), and refresh your browser. Your
+The folders are numbered because the files load in alphabetical order —
+numbers control which code runs first. The one exception is `main.js`,
+the entry file, which the runner always loads last.
+
+Try it: open `src/03_data/data.js`, change the text of one question, save
+the file (**Ctrl+S**, or **Cmd+S** on Mac), and refresh your browser. Your
 change is live.
 
 ## Something went wrong?
