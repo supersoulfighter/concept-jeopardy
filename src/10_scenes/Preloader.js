@@ -15,6 +15,7 @@ class Preloader extends Phaser.Scene {
 	//#endregion
 
 
+
 	//#region Constructor //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -25,21 +26,26 @@ class Preloader extends Phaser.Scene {
 	//#endregion
 
 
+
 	//#region Events ///////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
 	init() {
 		const B = Preloader.PROGRESS_BAR;
-		//  A simple progress bar. This is the outline of the bar.
 		const cx = this.scale.width / 2;
 		const cy = this.scale.height / 2;
+
+
+		// Progress bar //
+		// Outline
 		this.add.rectangle(
 			cx,
 			cy,
 			B.W,
 			B.H
 		).setStrokeStyle(B.BORDER, B.COLOR);
-		//  This is the progress bar itself. It will increase in size from the left based on the % of progress.
+		// Filled bar
+		// It will increase in size from the left based on the % of progress.
 		const bar = this.add.rectangle(
 			cx - (B.W / 2) + B.PAD,
 			cy,
@@ -56,11 +62,8 @@ class Preloader extends Phaser.Scene {
 
 
 	preload() {
-		// BUG-desktop: load.setPath fails. Use full paths in CJ.IMAGES instead.
-		Object.values(CJ.IMAGES).forEach((asset) => {
-			this.load.image(asset.key, asset.src);
-		});
 
+		// Fonts //
 		// Web fonts via the browser's FontFace API. We can't use
 		// load.font here: Phaser's loader refuses files whose key is
 		// already queued, and every weight MUST share the same key
@@ -84,6 +87,13 @@ class Preloader extends Phaser.Scene {
 					);
 				});
 			});
+		});
+
+
+		// Images //
+		// BUG-desktop: load.setPath fails. Use full paths in CJ.IMAGES instead.
+		Object.values(CJ.IMAGES).forEach((asset) => {
+			this.load.image(asset.key, asset.src);
 		});
 
 		// Icons — .svg files rasterize at 48px so they stay crisp when

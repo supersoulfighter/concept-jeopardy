@@ -10,14 +10,8 @@ CJ.IMAGES = {
 // texture key, so `iconLeft: 'search'` works on UI components.
 CJ.ICONS = [
 	{ key: 'check',         src: 'assets/icons/check.svg' },
-	{
-		key: 'chevron-left',
-		src: 'assets/icons/chevron-left.svg',
-	},
-	{
-		key: 'chevron-right',
-		src: 'assets/icons/chevron-right.svg',
-	},
+	{ key: 'chevron-left',  src: 'assets/icons/chevron-left.svg'},
+	{ key: 'chevron-right', src: 'assets/icons/chevron-right.svg'},
 	{ key: 'close',         src: 'assets/icons/close.svg' },
 	{ key: 'heart',         src: 'assets/icons/heart.svg' },
 	{ key: 'user',          src: 'assets/icons/user.svg' },

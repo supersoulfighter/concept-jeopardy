@@ -37,6 +37,7 @@ class GameOver extends Phaser.Scene {
 	//#endregion
 
 
+
 	//#region Constructor //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -47,6 +48,7 @@ class GameOver extends Phaser.Scene {
 	//#endregion
 
 
+
 	//#region Events ///////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -55,13 +57,16 @@ class GameOver extends Phaser.Scene {
 		const cx = this.scale.width / 2;
 		const cy = this.scale.height / 2;
 
-		// Red background for a negative score, green otherwise
+		// Background //
+		// Red for a negative score, green otherwise
 		const B = GameOver.BACKGROUND;
 		this.add.rectangle(
 			cx, cy, this.scale.width, this.scale.height,
 			score < 0 ? B.LOSE_COLOR : B.WIN_COLOR
 		);
 
+
+		// Text //
 		this.add.text(
 			cx, cy + GameOver.HEADING.DY, 'GAME OVER',
 			{ ...GameOver.HEADING.STYLE }
@@ -72,7 +77,9 @@ class GameOver extends Phaser.Scene {
 			{ ...GameOver.SCORE.STYLE }
 		).setOrigin(0.5);
 
-		// Replay button — a fresh board resets score and visited clues
+
+		// Replay button //
+		// A fresh board; resets score and visited clues
 		const R = GameOver.REPLAY_BTN;
 		const replayBtn = this.add.rectangle(
 			cx, cy + R.DY, R.W, R.H, R.COLOR

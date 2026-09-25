@@ -92,6 +92,7 @@ class Clue extends Phaser.Scene {
 	//#endregion
 
 
+
 	//#region Constructor //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -100,6 +101,7 @@ class Clue extends Phaser.Scene {
 	}
 
 	//#endregion
+
 
 
 	//#region Events ///////////////////////////////////////////////////////////
@@ -210,7 +212,7 @@ class Clue extends Phaser.Scene {
 		// Enter submits — or, once the verdict is showing, continues
 		if (event.key === 'Enter') {
 			if (this.submitted) {
-				this.returnToBoard(this.pointsDelta);
+				this.returnToBoard();
 			} else {
 				this.submitResponse();
 			}
@@ -296,13 +298,13 @@ class Clue extends Phaser.Scene {
 			cx, cy + B.DY, 'Continue', { ...B.STYLE }
 		).setOrigin(0.5);
 		continueBtn.on('pointerdown', () => {
-			this.returnToBoard(this.pointsDelta);
+			this.returnToBoard();
 		});
 	}
 
 
-	returnToBoard(pointsModifier) {
-		const score = this.score + pointsModifier;
+	returnToBoard() {
+		const score = this.score + this.pointsDelta;
 
 		// Count every tile on the board — if all are visited, game over
 		const totalClues = this.board.reduce(
@@ -322,6 +324,7 @@ class Clue extends Phaser.Scene {
 	}
 
 	//#endregion
+
 
 
 	//#region Internals ////////////////////////////////////////////////////////

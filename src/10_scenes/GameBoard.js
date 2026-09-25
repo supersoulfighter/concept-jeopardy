@@ -56,6 +56,7 @@ class GameBoard extends Phaser.Scene {
 	//#endregion
 
 
+
 	//#region Constructor //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +65,7 @@ class GameBoard extends Phaser.Scene {
 	}
 
 	//#endregion
+
 
 
 	//#region Events ///////////////////////////////////////////////////////////
@@ -87,12 +89,17 @@ class GameBoard extends Phaser.Scene {
 		const height = this.scale.height;
 		const cx = width / 2;
 		const cy = height / 2;
+
+
+		// Background //
 		this.add.image(
 			cx,
 			cy,
 			CJ.IMAGES.ROOM.key
 		).setOrigin(0.5).setScale(GameBoard.BG_SCALE);
 
+
+		// Score readout //
 		this.scoreText = this.add.text(
 			width - GameBoard.SCORE_READOUT.MARGIN,
 			GameBoard.SCORE_READOUT.MARGIN,
@@ -104,7 +111,9 @@ class GameBoard extends Phaser.Scene {
 			}
 		).setOrigin(1, 0);
 
-		// Derive the grid from the screen size: one extra row for header.
+
+		// Grid //
+		// Derive from the screen size: one extra row for header.
 		const gridW = width - 2 * L.MARGIN_X;
 		const gridH = height - L.MARGIN_TOP - L.MARGIN_BOTTOM;
 		const colW = gridW / L.COL_NUM;
@@ -115,7 +124,7 @@ class GameBoard extends Phaser.Scene {
 		this.board.forEach((catData, colIdx) => {
 			const x = L.MARGIN_X + (colIdx + 0.5) * colW;
 
-			// Render Category Header
+			// Category Header //
 			this.add.text(
 				x,
 				L.MARGIN_TOP + rowH / 2,
@@ -127,7 +136,8 @@ class GameBoard extends Phaser.Scene {
 				}
 			).setOrigin(0.5);
 
-			// Render Point Tiles
+
+			// Tiles //
 			catData.clues.forEach((clue, rowIdx) => {
 				const y = L.MARGIN_TOP + (rowIdx + 1.5) * rowH;
 				const clueId = `${colIdx}-${rowIdx}`;
@@ -135,7 +145,8 @@ class GameBoard extends Phaser.Scene {
 				// Check if this clue was already picked
 				const isVisited = this.visitedClues.includes(clueId);
 
-				// Draw Tile Background
+
+				// Tile Background //
 				const tileBg = this.add.rectangle(
 					x,
 					y,
@@ -144,7 +155,8 @@ class GameBoard extends Phaser.Scene {
 					isVisited ? GameBoard.TILE.VISITED : GameBoard.TILE.COLOR
 				);
 
-				// Draw Text Value
+
+				// Tile Text //
 				this.add.text(
 					x,
 					y,
@@ -155,8 +167,9 @@ class GameBoard extends Phaser.Scene {
 					}
 				).setOrigin(0.5);
 
+
+				// Make Interactive
 				if (!isVisited) {
-					// Make Interactive
 					tileBg.setInteractive({ useHandCursor: true });
 					tileBg.on(
 						'pointerover',
@@ -183,6 +196,7 @@ class GameBoard extends Phaser.Scene {
 	}
 
 	//#endregion
+
 
 
 	//#region Internals ////////////////////////////////////////////////////////

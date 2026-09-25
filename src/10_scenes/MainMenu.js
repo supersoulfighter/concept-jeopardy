@@ -12,6 +12,7 @@ class MainMenu extends Phaser.Scene {
 	//#endregion
 
 
+
 	//#region Constructor //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -22,18 +23,22 @@ class MainMenu extends Phaser.Scene {
 	//#endregion
 
 
+
 	//#region Events ///////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
 	create() {
 		const cx = this.scale.width / 2;
 
+		// Background //
 		this.add.image(
 			cx,
 			0,
 			CJ.IMAGES.SPLASH.key
 		).setOrigin(0.5, 0);
 
+
+		// Text //
 		this.add.text(
 			cx,
 			this.scale.height - MainMenu.START_TEXT.BOTTOM,
@@ -41,6 +46,8 @@ class MainMenu extends Phaser.Scene {
 			{...MainMenu.START_TEXT.STYLE}
 		).setOrigin(0.5);
 
+
+		// Click anywhere to proceed
 		this.input.once('pointerdown', () => {
 			this.scene.start(CJ.SCENES.BOARD);
 		});

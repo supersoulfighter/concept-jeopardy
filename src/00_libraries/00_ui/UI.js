@@ -103,6 +103,7 @@ class UIComponent extends Phaser.GameObjects.Container {
 	//#endregion
 
 
+
 	//#region State ////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 
@@ -143,6 +144,7 @@ class UIComponent extends Phaser.GameObjects.Container {
 	}
 
 	//#endregion
+
 
 
 	//#region Rendering ////////////////////////////////////////////////////////
@@ -246,6 +248,7 @@ class UIComponent extends Phaser.GameObjects.Container {
 	applyStyle (style) {}
 
 	//#endregion
+
 
 
 	//#region Icons ////////////////////////////////////////////////////////////
@@ -378,6 +381,7 @@ class UIComponent extends Phaser.GameObjects.Container {
 	}
 
 	//#endregion
+
 
 
 	//#region Input ////////////////////////////////////////////////////////////
