@@ -3,6 +3,7 @@
 //       x, y, width, height,
 //       placeholder: 'Type here...',
 //       value: '', maxLength: 20,
+//       iconLeft: 'search',   // pinned just inside the box edges
 //       onChange: (value, input) => { ... },
 //       onSubmit: (value, input) => { ... },   // fires on Enter
 //       style: { backgroundColor: '#fff', focused: {...} },
@@ -34,6 +35,9 @@ class UIInput extends UIComponent {
 		this.cursor.setVisible(false);
 		this.add(this.cursor);
 
+		// Optional icons — pinned to the box edges, see setupIcons()
+		this.setupIcons(config);
+
 		this.enableInput();
 		this.watchHover();
 		this.on('pointerdown', () => this.focus());
@@ -55,7 +59,8 @@ class UIInput extends UIComponent {
 	}
 
 
-	// #region Focus
+	//#region Focus ////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	// Give the field focus: show the cursor and start listening for
 	// keystrokes on the scene's keyboard plugin.
@@ -93,10 +98,11 @@ class UIInput extends UIComponent {
 		return this;
 	}
 
-	// #endregion
+	//#endregion
 
 
-	// #region Typing
+	//#region Typing ///////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	// Handle one keypress while focused.
 	onTypeKey (event) {
@@ -135,19 +141,40 @@ class UIInput extends UIComponent {
 			: UI.pick(style.textStyle || {}, 'fill', '#ffffff');
 		this.label.setFill(fill);
 
-		// Left-align inside the box with padding
-		const textX = -this.width / 2 + this.padding;
+		// Icons pin to the box edges, inside the padding
+		if (this.iconLeft) {
+			this.iconLeft.setPosition(
+				-this.width / 2 + this.padding + this.iconLeft.displayWidth / 2, 0
+			);
+		}
+		if (this.iconRight) {
+			this.iconRight.setPosition(
+				this.width / 2 - this.padding - this.iconRight.displayWidth / 2, 0
+			);
+		}
+
+		// Left-align the text inside the box: padding, plus room for
+		// a left icon when there is one
+		let textX = -this.width / 2 + this.padding;
+		if (this.iconLeft) {
+			textX += this.iconLeft.displayWidth + this.iconGap;
+		}
 		this.label.setPosition(textX, 0);
 
-		// Cursor hugs the end of the text
+		// Cursor hugs the end of the typed text — but when only the
+		// placeholder is showing it belongs BEFORE the prompt text
+		const cursorX = showingPlaceholder
+			? textX
+			: textX + this.label.width + 2;
 		this.cursor.setSize(2, this.label.height || 20);
-		this.cursor.setPosition(textX + this.label.width + 2, 0);
+		this.cursor.setPosition(cursorX, 0);
 	}
 
-	// #endregion
+	//#endregion
 
 
-	// #region Public API
+	//#region Public API ///////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	setValue (value) {
 		this.value = value;
@@ -161,13 +188,14 @@ class UIInput extends UIComponent {
 	}
 
 
-	// Called by render() — restyle the text, then re-place it since a
-	// state may have changed the font size.
+	// Called by render() — restyle the text and icons, then re-place
+	// them since a state may have changed the font size.
 	applyStyle (style) {
 		if (!this.label) return; // render() runs before label exists
 		if (style.textStyle) this.label.setStyle(style.textStyle);
+		this.styleIcons(style);
 		this.refreshText();
 	}
 
-	// #endregion
+	//#endregion
 }

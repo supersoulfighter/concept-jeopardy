@@ -27,4 +27,7 @@ globs:
   calls across multiple lines unless the whole line fits in ~60 chars.
 - **Formatting** — tabs for indentation, single quotes, semicolons.
 - **Line spacing** — use 1 empty lines between fields, 2 between functions; and fields; 3 between classes or major sections
-- **Regions** — use IDE regions to organize long sections of code.
+- **IDE Regions** — use //#region RegionName ... //#endregion to organize long sections of code.
+  Region headers are a banner ending at column 80 (76 chars + tab):
+  `//#region Name` padded with `/` to 76 chars, then a line of 76 `/`,
+  then a blank line before the content.

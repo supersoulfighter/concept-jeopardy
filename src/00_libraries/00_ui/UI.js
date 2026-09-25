@@ -86,7 +86,8 @@ class UIComponent extends Phaser.GameObjects.Container {
 	}
 
 
-	// #region State
+	//#region State ////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	// Merge the base style with whichever state overrides are active.
 	resolveStyle () {
@@ -124,10 +125,11 @@ class UIComponent extends Phaser.GameObjects.Container {
 		return this;
 	}
 
-	// #endregion
+	//#endregion
 
 
-	// #region Rendering
+	//#region Rendering ////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	// Redraw everything for the current state. Called by setFlag() and
 	// once at the end of each subclass constructor.
@@ -209,18 +211,137 @@ class UIComponent extends Phaser.GameObjects.Container {
 	// subclass content exists — so each override guards its own fields.
 	applyStyle (style) {}
 
-	// #endregion
+	//#endregion
 
 
-	// #region Input
+	//#region Icons ////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
-	// Rectangular hit area centered on the component + a hand cursor.
+	// Set up optional icons from the config. Call this in the subclass
+	// constructor, AFTER the label exists but BEFORE sizing/layout.
+	// iconLeft / iconRight accept a texture key ('coin') or a config
+	// object: { key, frame, size, align } where align is 'inline'
+	// (sits in the text row, moves with the text) or 'edge' (pinned to
+	// its side of the box, padding away from the edge).
+	setupIcons (config) {
+		this.iconGap = UI.pick(config, 'iconGap', UI.DEFAULT_ICON_GAP);
+		this.iconSize = UI.pick(config, 'iconSize', UI.DEFAULT_ICON_SIZE);
+		this.iconLeft = this.makeIcon(config.iconLeft);
+		this.iconRight = this.makeIcon(config.iconRight);
+	}
+
+
+	// Build one icon image from a key or a { key, frame, size, align }
+	// config. Returns null when that side has no icon.
+	makeIcon (iconConfig) {
+		if (!iconConfig) return null;
+		const conf = (typeof iconConfig === 'string')
+			? { key: iconConfig }
+			: iconConfig;
+		const icon = this.scene.add.image(0, 0, conf.key, conf.frame);
+		// Scale to the target height, keeping the aspect ratio
+		const size = conf.size || this.iconSize;
+		icon.setScale(size / icon.height);
+		icon.setOrigin(0.5);
+		// 'edge' icons pin to the box edge; 'inline' icons ride with
+		// the text. Record the choice on the image for layoutContent().
+		icon.iconAlign = (conf.align === 'edge') ? 'edge' : 'inline';
+		this.add(icon);
+		return icon;
+	}
+
+
+	// True when this icon is pinned to its box edge instead of
+	// sitting inline beside the text.
+	isEdgeIcon (icon) {
+		return icon && icon.iconAlign === 'edge';
+	}
+
+
+	// Width of the [inline icon] text [inline icon] row — edge icons
+	// don't count, they hang off the sides. Used for shrink-wrap.
+	contentWidth () {
+		let w = this.label.width;
+		if (this.iconLeft && !this.isEdgeIcon(this.iconLeft)) {
+			w += this.iconLeft.displayWidth + this.iconGap;
+		}
+		if (this.iconRight && !this.isEdgeIcon(this.iconRight)) {
+			w += this.iconRight.displayWidth + this.iconGap;
+		}
+		return w;
+	}
+
+
+	// Tallest piece of content — used for shrink-wrap height.
+	contentHeight () {
+		let h = this.label.height;
+		if (this.iconLeft) h = Math.max(h, this.iconLeft.displayHeight);
+		if (this.iconRight) h = Math.max(h, this.iconRight.displayHeight);
+		return h;
+	}
+
+
+	// Lay out the content row: edge icons pin to the left/right padding
+	// edge, then [inline icon] text [inline icon] centers in the box.
+	layoutContent () {
+		const pad = this.padding || 0;
+
+		if (this.isEdgeIcon(this.iconLeft)) {
+			this.iconLeft.setPosition(
+				-this.width / 2 + pad + this.iconLeft.displayWidth / 2, 0
+			);
+		}
+		if (this.isEdgeIcon(this.iconRight)) {
+			this.iconRight.setPosition(
+				this.width / 2 - pad - this.iconRight.displayWidth / 2, 0
+			);
+		}
+
+		let total = this.contentWidth();
+		let x = -total / 2;
+
+		if (this.iconLeft && !this.isEdgeIcon(this.iconLeft)) {
+			x += this.iconLeft.displayWidth / 2;
+			this.iconLeft.setPosition(x, 0);
+			x += this.iconLeft.displayWidth / 2 + this.iconGap;
+		}
+
+		this.label.setPosition(x + this.label.width / 2, 0);
+		x += this.label.width;
+
+		if (this.iconRight && !this.isEdgeIcon(this.iconRight)) {
+			x += this.iconGap + this.iconRight.displayWidth / 2;
+			this.iconRight.setPosition(x, 0);
+		}
+	}
+
+
+	// Tint both icons to style.iconColor, when the style defines one.
+	// Pixel-art SVGs render solid black — setTintFill recolors them.
+	// (Skipped otherwise so colorful icon textures keep their colors.)
+	styleIcons (style) {
+		if (style.iconColor === undefined) return;
+		const tint = UI.color(style.iconColor);
+		if (this.iconLeft) this.iconLeft.setTintFill(tint);
+		if (this.iconRight) this.iconRight.setTintFill(tint);
+	}
+
+	//#endregion
+
+
+	//#region Input ////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+
+	// Rectangular hit area over the component + a hand cursor.
 	// Containers have no default hit area, so we pass one explicitly.
+	// (0, 0) here is the widget's top-left, not its center: Phaser's
+	// hit test shifts the pointer position by displayOrigin, which for
+	// a Container is always half the width and height.
 	enableInput () {
 		const w = this.width;
 		const h = this.height;
 		this.setInteractive({
-			hitArea: new Phaser.Geom.Rectangle(-w / 2, -h / 2, w, h),
+			hitArea: new Phaser.Geom.Rectangle(0, 0, w, h),
 			hitAreaCallback: Phaser.Geom.Rectangle.Contains,
 			useHandCursor: true
 		});
@@ -238,5 +359,5 @@ class UIComponent extends Phaser.GameObjects.Container {
 		});
 	}
 
-	// #endregion
+	//#endregion
 }

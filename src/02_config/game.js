@@ -11,4 +11,5 @@ CJ.SCENES = {
 	BOARD: 'GameBoard',
 	CLUE: 'Clue',
 	GAMEOVER: 'GameOver',
+	UI_TEST: 'UITest',
 };

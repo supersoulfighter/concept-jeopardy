@@ -26,9 +26,9 @@ CJ.TYPE_LEVELS = {
 	P_SMALL: { fontFamily: getFontFamilyName(400), fontSize: CJ.FONT_SIZE.XS },
 };
 
-// Web fonts. key() builds the Phaser font key, url() the fontsource file.
+// Web fonts. key() builds the Phaser font key, url() the local file.
 CJ.FONT = {
 	WEIGHTS: [100, 200, 300, 400, 500, 600, 700, 800, 900],
 	key: getFontFamilyName,
-	url: (w) => `https://cdn.jsdelivr.net/npm/@fontsource/barlow-condensed@5.3.0/files/barlow-condensed-latin-${w}-normal.woff2`,
+	url: (w) => `assets/fonts/barlow-condensed-latin-${w}-normal.woff2`,
 };

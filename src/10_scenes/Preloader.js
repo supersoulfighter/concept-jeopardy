@@ -41,6 +41,15 @@ class Preloader extends Phaser.Scene {
 		CJ.FONT.WEIGHTS.forEach((w) => {
 			this.load.font(CJ.FONT.key(w), CJ.FONT.url(w), 'woff2');
 		});
+
+		// Icon SVGs — width/height tell Phaser to rasterize at 48px so
+		// they stay crisp when scaled, instead of the 24px SVG default.
+		CJ.ICONS.forEach((name) => {
+			this.load.svg(name, `assets/icons/${name}.svg`, {
+				width: 48,
+				height: 48,
+			});
+		});
 	}
 
 
