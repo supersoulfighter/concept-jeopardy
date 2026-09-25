@@ -181,12 +181,28 @@ class Clue extends Phaser.Scene {
 	}
 
 
+	// Reduce a Jeopardy "question" (or the player's typed response) to
+	// the part that matters: drops the "What/Who/When is/are" prefix,
+	// accent marks, punctuation, articles, whitespace, and case — so
+	// "Pokémon" matches "pokemon" and "What is Mario?" matches "mario".
+	static normalizeResponse(str) {
+		return str
+			.toLowerCase()
+			.normalize('NFD').replace(/[̀-ͯ]/g, '') // strip accent marks
+			.replace(/^(what|who|when)\s+(is|are)\s+/, '')
+			.replace(/[^a-z0-9\s]/g, '')
+			.split(/\s+/)
+			.filter((w) => w && !['a', 'an', 'the'].includes(w))
+			.join('');
+	}
+
+
 	// Check the response against the clue's "question" and show the verdict.
 	submitResponse() {
 		if (this.submitted) return;
 
-		const isCorrect = normalizeResponse(this.response)
-			=== normalizeResponse(this.clue.question);
+		const isCorrect = Clue.normalizeResponse(this.response)
+			=== Clue.normalizeResponse(this.clue.question);
 		const R = Clue.RESULT;
 		this.finishRound(
 			isCorrect ? 'CORRECT!' : 'INCORRECT',

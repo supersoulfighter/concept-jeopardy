@@ -22,7 +22,7 @@ class GameBoard extends Phaser.Scene {
 		MARGIN: CJ.SPACING.S,
 		STYLE: {
 			...CJ.TYPE_LEVELS.H5,
-			fontFamily: getFontFamilyName(700),
+			fontStyle: '700', // bump the weight from H5's default 500
 			fill: CJ.PALETTE.LIME,
 		},
 	};

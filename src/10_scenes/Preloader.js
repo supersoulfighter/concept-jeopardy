@@ -37,26 +37,50 @@ class Preloader extends Phaser.Scene {
 			this.load.image(asset.key, asset.src);
 		});
 
-		// BUG-desktop: Spaces in the key parameter (font name) cause problems. Use hyphens.
-		CJ.FONT.WEIGHTS.forEach((w) => {
-			this.load.font(CJ.FONT.key(w), CJ.FONT.url(w), 'woff2');
+		// Web fonts via the browser's FontFace API. We can't use
+		// load.font here: Phaser's loader refuses files whose key is
+		// already queued, and every weight MUST share the same key
+		// because the key becomes the CSS font-family. So each file
+		// gets its own FontFace with a 'weight' descriptor — then
+		// fontStyle: '700' in a text style picks the right face.
+		this.fontPromises = [];
+		CJ.FONTS.forEach((font) => {
+			font.files.forEach((file) => {
+				file.weights.forEach((w) => {
+					const face = new FontFace(
+						font.family,
+						`url(${CJ.fontFile(font, file, w)}) format('${file.format}')`,
+						{ weight: String(w), style: file.style }
+					);
+					// load() fetches the file; fonts.add() registers it
+					this.fontPromises.push(
+						face.load().then((loaded) => document.fonts.add(loaded))
+					);
+				});
+			});
 		});
 
-		// Icon SVGs — width/height tell Phaser to rasterize at 48px so
-		// they stay crisp when scaled, instead of the 24px SVG default.
-		CJ.ICONS.forEach((name) => {
-			this.load.svg(name, `assets/icons/${name}.svg`, {
-				width: 48,
-				height: 48,
-			});
+		// Icons — .svg files rasterize at 48px so they stay crisp when
+		// scaled; any other format loads as a plain image.
+		CJ.ICONS.forEach((icon) => {
+			if (icon.src.endsWith('.svg')) {
+				this.load.svg(icon.key, icon.src, {
+					width: 48,
+					height: 48,
+				});
+			} else {
+				this.load.image(icon.key, icon.src);
+			}
 		});
 	}
 
 
 	create() {
-		//  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-		//  For example, you can define global animations here, so we can use them in other scenes.
-		//  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-		this.scene.start(CJ.SCENES.MENU);
+		// Wait for every font face before leaving — canvas text only
+		// picks up a weight after its FontFace has loaded. A failed
+		// file shouldn't block the game, so errors fall through.
+		Promise.all(this.fontPromises)
+			.catch(() => {})
+			.finally(() => this.scene.start(CJ.SCENES.MENU));
 	}
 }
