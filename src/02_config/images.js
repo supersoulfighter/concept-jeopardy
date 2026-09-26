@@ -25,20 +25,22 @@ CJ.SHEETS = [
 ];
 
 // Icon manifest — pixel-art SVGs (pixelarticons, MIT) in
-// public/assets/icons/, but any image format works: the loader
+// public/assets/images/icons/, but any image format works: the loader
 // picks .svg vs plain image from the file extension. 'key' is the
 // texture key, so `iconLeft: 'search'` works on UI components.
 CJ.ICONS = [
-	{ key: 'check',         src: 'assets/icons/check.svg' },
-	{ key: 'chevron-left',  src: 'assets/icons/chevron-left.svg'},
-	{ key: 'chevron-right', src: 'assets/icons/chevron-right.svg'},
-	{ key: 'close',         src: 'assets/icons/close.svg' },
-	{ key: 'heart',         src: 'assets/icons/heart.svg' },
-	{ key: 'user',          src: 'assets/icons/user.svg' },
-	{ key: 'search',        src: 'assets/icons/search.svg' },
-	{ key: 'alert',         src: 'assets/icons/alert.svg' },
-	{ key: 'coin',          src: 'assets/icons/coin.svg' },
-	{ key: 'trophy',        src: 'assets/icons/trophy.svg' },
-	{ key: 'star',          src: 'assets/icons/star.svg' },
-	{ key: 'home',          src: 'assets/icons/home.svg' },
+	{ key: 'check',         src: 'assets/images/icons/check.svg' },
+	{ key: 'chevron-left',  src: 'assets/images/icons/chevron-left.svg'},
+	{ key: 'chevron-right', src: 'assets/images/icons/chevron-right.svg'},
+	{ key: 'close',         src: 'assets/images/icons/close.svg' },
+	{ key: 'heart',         src: 'assets/images/icons/heart.svg' },
+	{ key: 'user',          src: 'assets/images/icons/user.svg' },
+	{ key: 'search',        src: 'assets/images/icons/search.svg' },
+	// Phaser Desktop gave this error message for the following 2 files:
+	// WebGL: INVALID_VALUE: texImage2D: bad image data
+	// { key: 'alert',         src: 'assets/images/icons/alert.svg' },
+	// { key: 'coin',          src: 'assets/images/icons/coin.svg' },
+	{ key: 'trophy',        src: 'assets/images/icons/trophy.svg' },
+	{ key: 'star',          src: 'assets/images/icons/star.svg' },
+	{ key: 'home',          src: 'assets/images/icons/home.svg' },
 ];

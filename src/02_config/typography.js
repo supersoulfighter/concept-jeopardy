@@ -11,13 +11,16 @@ CJ.FONT_SIZE = {
 	XXXL: 56,
 };
 
-// Web font manifest — one entry per family folder under
-// public/assets/fonts/, with fontsource-style file names:
-//   <dir>-<subset>-<weight>-<style>.<format>
+// Web font manifest — one entry per family, served from the
+// Fontsource CDN (https://fontsource.org, files via jsDelivr).
+// Phaser Desktop can't upload local font files, so we load them
+// over the network with the browser's FontFace API.
+// File names follow fontsource's scheme:
+//   fonts/<dir>@latest/<subset>-<weight>-<style>.<format>
 // Each 'files' group shares a subset (character set), style, and
 // format; add another group to the same family for italics, a
 // different subset, or a different format. Swapping fonts means
-// a new folder plus one entry here — no loader changes needed.
+// a new 'dir' slug plus one entry here — no loader changes needed.
 //
 // Every file in a family loads under the SAME key (the family
 // name) with FontFace weight/style descriptors, so text styles
@@ -40,10 +43,12 @@ CJ.FONTS = [
 // Shorthand for the primary family — used all over the type ramp.
 CJ.FONT_FAMILY = CJ.FONTS[0].family;
 
-// Builds the fontsource-style path for one font file.
-// Only the Preloader needs this; text styles use family + fontStyle.
+// Builds the CDN URL for one font file on jsDelivr's fontsource
+// mirror. Only the Preloader needs this; text styles use
+// family + fontStyle.
 CJ.fontFile = (font, file, weight) =>
-	`assets/fonts/${font.dir}/${font.dir}-` +
+	'https://cdn.jsdelivr.net/fontsource/fonts/' +
+	`${font.dir}@latest/` +
 	`${file.subset}-${weight}-${file.style}.${file.format}`;
 
 // Type ramp — semantic text styles, like CSS classes. Each is a
