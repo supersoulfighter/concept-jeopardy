@@ -157,6 +157,24 @@ class GameBoard extends Phaser.Scene {
 				});
 			});
 		});
+
+		// Theme music //
+		// Loops for as long as the board is on screen. The sound object
+		// lives in the registry so every board visit shares one instance;
+		// pausing (not stopping) keeps the playback position between clues.
+		let theme = this.registry.get('theme');
+		if (!theme) {
+			theme = this.sound.add(CJ.SFX.THEME.key, { loop: true });
+			this.registry.set('theme', theme);
+		}
+		if (theme.isPaused) {
+			theme.resume();
+		} else if (!theme.isPlaying) {
+			theme.play();
+		}
+
+		// Leaving the board — clue opens or game over — pauses the theme
+		this.events.once('shutdown', () => theme.pause());
 	}
 
 	//#endregion

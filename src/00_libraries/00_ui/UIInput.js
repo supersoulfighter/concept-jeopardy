@@ -138,6 +138,10 @@ class UIInput extends UIComponent {
 	// Handle one keypress while focused.
 	onTypeKey (event) {
 		if (event.key === 'Enter') {
+			// Stamp the event so scene-level keydown listeners (like a
+			// "press Enter to continue" shortcut) don't treat this same
+			// keypress as theirs too.
+			event.usedByInput = true;
 			UI.playSfx(this, 'submit');
 			if (this.onSubmit) this.onSubmit(this.value, this);
 			return;

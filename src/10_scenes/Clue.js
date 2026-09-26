@@ -83,6 +83,11 @@ class Clue extends Phaser.Scene {
 		this.inputField.focus(); // start typing right away
 
 
+		// Clue sting //
+		// Little jingle each time a clue opens
+		this.sound.play(CJ.SFX.CLUE.key);
+
+
 		// Submit button //
 		this.submitBtn = this.add.uiButton({
 			x: submitX,
@@ -139,9 +144,10 @@ class Clue extends Phaser.Scene {
 
 	// The uiInput owns typing; this only catches Enter after the
 	// verdict shows, so keyboard players can continue without
-	// reaching for the mouse.
+	// reaching for the mouse. usedByInput means this same keypress
+	// already submitted the response — leave the verdict on screen.
 	onTypeKey(event) {
-		if (event.key === 'Enter' && this.submitted) {
+		if (event.key === 'Enter' && this.submitted && !event.usedByInput) {
 			// Same cue as the Continue button it stands in for
 			this.sound.play(CJ.SFX.SELECT.key);
 			this.returnToBoard();
@@ -190,6 +196,9 @@ class Clue extends Phaser.Scene {
 		if (this.submitted) return;
 		this.submitted = true;
 		this.pointsDelta = pointsDelta;
+
+		// Kill the clue jingle — round's over, verdict takes the stage
+		this.sound.stopByKey(CJ.SFX.CLUE.key);
 		this.timer.remove();
 		this.timerBar.destroy();
 		const cx = this.scale.width / 2;
