@@ -2,7 +2,7 @@
 // Cues come from the "rubber" pack of the uisfx library (https://uisfx.com)
 CJ.SFX = {
 	// Widget feedback — wired via sfx configs on UIButton/UIInput
-	HOVER:  { key: 'hover',  src: 'assets/sounds/sfx/jeopardy/hover.mp3' },
+	HOVER:  { key: 'hover',  src: 'assets/sounds/sfx/rubber/hover.mp3' },
 	PRESS:  { key: 'press',  src: 'assets/sounds/sfx/rubber/press.mp3' },
 	SELECT: { key: 'select', src: 'assets/sounds/sfx/rubber/select.mp3' },
 	FOCUS:  { key: 'focus',  src: 'assets/sounds/sfx/rubber/focus.mp3' },

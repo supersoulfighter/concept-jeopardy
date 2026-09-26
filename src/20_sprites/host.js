@@ -27,7 +27,7 @@ class Host extends Phaser.GameObjects.Sprite {
 		{ key: 'host-agree',      sheet: 'host2', row: 3 },
 	];
 
-	static SCALE = 1; 
+	static SCALE = .8;
 	static WALK_SPEED = 60;    // px/sec while pacing
 	static IDLE_MIN = 2000;      // ms — shortest idle pause
 	static IDLE_MAX = 12000;     // ms — longest idle pause
