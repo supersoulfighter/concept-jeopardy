@@ -19,6 +19,9 @@ class GameBoard extends Phaser.Scene {
 		// Track score across scene switches
 		this.score = data.score || 0;
 		this.visitedClues = data.visitedClues || [];
+		// 'correct'/'wrong' when returning from Clue, undefined on
+		// fresh launches — feeds the host's reaction
+		this.result = data.result;
 		// Grid parameters — the grid is COL_NUM x ROW_NUM and every
 		// dimension is derived from the screen size in create().
 		// data.layout can override any of these per launch.
@@ -47,6 +50,10 @@ class GameBoard extends Phaser.Scene {
 		const height = this.scale.height;
 		const cx = width / 2;
 		const cy = height / 2;
+
+		// The board starts small in the background — placeholder for
+		// the planned perspective-zoom reveal; the host stands in front
+		const BOARD_SCALE = 0.25;
 
 
 		// Background //
@@ -88,12 +95,20 @@ class GameBoard extends Phaser.Scene {
 		);
 		const pointsSize = rowH * G.TILE_FONT_SCALE;
 
+		// Everything on the board lives in one container so the whole
+		// grid scales together. The position formula recenters the
+		// shrunken board since scaling happens around the origin.
+		this.boardLayer = this.add.container(
+			cx * (1 - BOARD_SCALE),
+			cy * (1 - BOARD_SCALE)
+		).setScale(BOARD_SCALE);
+
 		this.board.forEach((catData, colIdx) => {
 			const x = G.MARGIN_X + (colIdx + 0.5) * colW;
 
 			// Category Header // font size and wrap come from the
 			// grid math so categories shrink to fit their column
-			this.add.uiLabel({
+			this.boardLayer.add(this.add.uiLabel({
 				x,
 				y: G.MARGIN_TOP + rowH / 2,
 				text: catData.category,
@@ -104,7 +119,7 @@ class GameBoard extends Phaser.Scene {
 					fontSize: categorySize,
 					wordWrap: { width: colW - CJ.SPACING.XS },
 				},
-			});
+			}));
 
 
 			// Tiles //
@@ -118,7 +133,7 @@ class GameBoard extends Phaser.Scene {
 
 				// Tile // 'disabled' tiles get the gray visited look
 				// and a dead hit area automatically
-				this.add.uiButton({
+				this.boardLayer.add(this.add.uiButton({
 					x,
 					y,
 					width: colW - CJ.SPACING.XXXS,
@@ -145,6 +160,8 @@ class GameBoard extends Phaser.Scene {
 					},
 					onClick: () => {
 						this.visitedClues.push(clueId);
+						// Host announces the clue the instant it's picked
+						this.host.announce();
 						// Launch the Clue overlay scene
 						this.scene.start(CJ.SCENES.CLUE, {
 							clue: clue,
@@ -154,9 +171,19 @@ class GameBoard extends Phaser.Scene {
 							layout: this.GRID
 						});
 					},
-				});
+				}));
 			});
 		});
+
+
+		// Host // added after the board layer so he draws in front,
+		// standing at screen center while he wanders
+		this.host = new Host(this, cx, cy);
+
+		// Back from a clue? He reacts to how the player did
+		if (this.result) {
+			this.host.react(this.result === 'correct');
+		}
 
 		// Theme music //
 		// Loops for as long as the board is on screen. The sound object

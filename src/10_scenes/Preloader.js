@@ -110,6 +110,16 @@ class Preloader extends Phaser.Scene {
 		});
 
 
+		// Spritesheets //
+		// Sheets need their cell size so the loader can slice frames.
+		CJ.SHEETS.forEach((sheet) => {
+			this.load.spritesheet(sheet.key, sheet.src, {
+				frameWidth: sheet.frameWidth,
+				frameHeight: sheet.frameHeight,
+			});
+		});
+
+
 		// Sounds //
 		// Same full-path pattern as images (BUG-desktop: setPath fails).
 		// The browser only unlocks audio after a user gesture — Phaser's

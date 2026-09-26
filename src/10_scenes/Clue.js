@@ -269,7 +269,9 @@ class Clue extends Phaser.Scene {
 			score,
 			visitedClues: this.visitedClues,
 			board: this.board,
-			layout: this.layout
+			layout: this.layout,
+			// Positive delta = correct; negative = wrong or time's up
+			result: this.pointsDelta > 0 ? 'correct' : 'wrong'
 		});
 	}
 
