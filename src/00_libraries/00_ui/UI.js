@@ -432,13 +432,19 @@ class UIComponent extends Phaser.GameObjects.Container {
 
 
 	// Tint both icons to style.iconColor, when the style defines one.
-	// Pixel-art SVGs render solid black — setTintFill recolors them.
+	// Pixel-art SVGs render solid black — FILL tint mode recolors them.
 	// (Skipped otherwise so colorful icon textures keep their colors.)
 	styleIcons (style) {
 		if (style.iconColor === undefined) return;
 		const tint = UI.color(style.iconColor);
-		if (this.iconLeft) this.iconLeft.setTintFill(tint);
-		if (this.iconRight) this.iconRight.setTintFill(tint);
+		if (this.iconLeft) {
+			this.iconLeft.setTint(tint)
+				.setTintMode(Phaser.TintModes.FILL);
+		}
+		if (this.iconRight) {
+			this.iconRight.setTint(tint)
+				.setTintMode(Phaser.TintModes.FILL);
+		}
 	}
 
 	//#endregion

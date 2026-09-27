@@ -24,23 +24,27 @@ CJ.SHEETS = [
 	},
 ];
 
-// Icon manifest — pixel-art SVGs (pixelarticons, MIT) in
-// public/assets/images/icons/, but any image format works: the loader
-// picks .svg vs plain image from the file extension. 'key' is the
-// texture key, so `iconLeft: 'search'` works on UI components.
+// Icon manifest — pixel-art SVGs from the pixelarticons npm package
+// (MIT), served over jsDelivr: Phaser Desktop chokes on the local
+// svg files, so we fetch them from the CDN instead. The loader
+// still picks .svg vs plain image from the file extension; 'key' is
+// the texture key, so `iconLeft: 'search'` works on UI components.
+// NOTE: 'alert' and 'coin' were renamed upstream — the package only
+// ships square-alert.svg and coins.svg, which is why the old local
+// copies failed to decode.
+CJ.ICON_CDN =
+	'https://cdn.jsdelivr.net/npm/pixelarticons@2.4.1/svg/';
 CJ.ICONS = [
-	{ key: 'check',         src: 'assets/images/icons/check.svg' },
-	{ key: 'chevron-left',  src: 'assets/images/icons/chevron-left.svg'},
-	{ key: 'chevron-right', src: 'assets/images/icons/chevron-right.svg'},
-	{ key: 'close',         src: 'assets/images/icons/close.svg' },
-	{ key: 'heart',         src: 'assets/images/icons/heart.svg' },
-	{ key: 'user',          src: 'assets/images/icons/user.svg' },
-	{ key: 'search',        src: 'assets/images/icons/search.svg' },
-	// Phaser Desktop gave this error message for the following 2 files:
-	// WebGL: INVALID_VALUE: texImage2D: bad image data
-	// { key: 'alert',         src: 'assets/images/icons/alert.svg' },
-	// { key: 'coin',          src: 'assets/images/icons/coin.svg' },
-	{ key: 'trophy',        src: 'assets/images/icons/trophy.svg' },
-	{ key: 'star',          src: 'assets/images/icons/star.svg' },
-	{ key: 'home',          src: 'assets/images/icons/home.svg' },
+	{ key: 'check',         src: CJ.ICON_CDN + 'check.svg' },
+	{ key: 'chevron-left',  src: CJ.ICON_CDN + 'chevron-left.svg' },
+	{ key: 'chevron-right', src: CJ.ICON_CDN + 'chevron-right.svg' },
+	{ key: 'close',         src: CJ.ICON_CDN + 'close.svg' },
+	{ key: 'heart',         src: CJ.ICON_CDN + 'heart.svg' },
+	{ key: 'user',          src: CJ.ICON_CDN + 'user.svg' },
+	{ key: 'search',        src: CJ.ICON_CDN + 'search.svg' },
+	{ key: 'alert',         src: CJ.ICON_CDN + 'square-alert.svg' },
+	{ key: 'coin',          src: CJ.ICON_CDN + 'coins.svg' },
+	{ key: 'trophy',        src: CJ.ICON_CDN + 'trophy.svg' },
+	{ key: 'star',          src: CJ.ICON_CDN + 'star.svg' },
+	{ key: 'home',          src: CJ.ICON_CDN + 'home.svg' },
 ];
