@@ -16,7 +16,8 @@ class GameBoard extends Phaser.Scene {
 		bl: { x: 70, y: 596 },
 	};
 
-	static MESH_SUBDIV = 8;   // quad grid density — smooths the warp
+	static STRIPS = 64;        // column slices faking the warp
+	static FLY_STRIPS = 16;    // column slices on the flying cell
 	static FLY_MS = 2000;      // ms, cell's flight to the camera
 	static BOARD_TEX = 'boardTex'; // texture key for the baked grid
 
@@ -174,7 +175,7 @@ class GameBoard extends Phaser.Scene {
 		});
 
 		// Bake: draw the layer into a RenderTexture, then register
-		// it under a texture key the mesh can use. draw() only queues
+		// it under a texture key the strips can use. draw() only queues
 		// commands — render() is what actually paints them.
 		const rt = this.add.renderTexture(0, 0, gridW, gridH);
 		rt.draw(layer);
@@ -183,15 +184,16 @@ class GameBoard extends Phaser.Scene {
 		rt.destroy();
 		layer.destroy();
 
-		// Board mesh // a subdivided quad warped onto the studio
-		// frame — each grid vertex is pushed to its projected spot
-		const meshData = this.buildBoardMesh();
-		this.boardMesh = this.add.mesh2d(
-			0,
-			0,
-			GameBoard.BOARD_TEX,
-			meshData.vertices,
-			meshData.indices
+		// Board strips // the baked texture sliced into thin
+		// columns — each plain Image stretches between the quad's
+		// top and bottom edges. Heights vary across the quad, and
+		// that reads as perspective. No Mesh needed.
+		this.boardW = gridW;
+		this.boardH = gridH;
+		this.boardStrips = this.buildStrips(
+			GameBoard.QUAD,
+			{ x: 0, y: 0, w: gridW, h: gridH },
+			GameBoard.STRIPS
 		);
 
 		// Per-tile hit polys + hover paint, in projected space
@@ -203,10 +205,11 @@ class GameBoard extends Phaser.Scene {
 		this.input.on('pointerdown', (p) => this.onBoardDown(p));
 
 
-		// Host // added after the board layer so he draws in front,
+		// Host //
+		// added after the board layer so he draws in front,
 		// standing at screen center while he wanders
 		this.host = new Host(this, cx, cy+100);
-
+		//
 		// Back from a clue? He reacts to how the player did
 		if (this.result) {
 			this.host.react(this.result === 'correct');
@@ -254,35 +257,88 @@ class GameBoard extends Phaser.Scene {
 	}
 
 
-	// Build the subdivided quad the board texture stretches over.
-	// vertices are [x, y, u, v] quads; indices are [a, b, c, page]
-	// triples+page — two triangles per grid cell.
-	buildBoardMesh() {
-		const n = GameBoard.MESH_SUBDIV;
-		const vertices = [];
-		const indices = [];
+	// Point a->b at t. Tiny helper the strip code leans on.
+	lerpPt(a, b, t) {
+		return {
+			x: a.x + (b.x - a.x) * t,
+			y: a.y + (b.y - a.y) * t,
+		};
+	}
 
-		for (let j = 0; j <= n; j++) {
-			for (let i = 0; i <= n; i++) {
-				const u = i / n;
-				const v = j / n;
-				const p = this.project(u, v);
-				// boardTex lives y-flipped in GL space — sample (u, 1-v)
-				vertices.push(p.x, p.y, u, 1 - v);
-			}
+
+	// Cut a texture rect into `count` thin column Images standing
+	// over a screen quad. Each strip's crop covers one slice of
+	// the rect; layoutStrips() does the stretching.
+	buildStrips(quad, rect, count, depth = 0) {
+		// Crops take source-texture pixels; the renderer divides the
+		// crop by the source's resolution to get logical size.
+		// Measure both so strips scale right at any density.
+		const tex = this.textures.get(GameBoard.BOARD_TEX);
+		const src = tex.getSourceImage();
+		const res = tex.frames.__BASE.source.resolution;
+		const pxW = src.width / this.boardW;
+		const pxH = src.height / this.boardH;
+		const strips = [];
+		const sliceW = (rect.w * pxW) / count;
+		for (let i = 0; i < count; i++) {
+			const strip = this.add.image(0, 0, GameBoard.BOARD_TEX);
+			// crop rect in texture pixels — +1px wide hides seams
+			const cx = rect.x * pxW + i * sliceW;
+			const cy = rect.y * pxH;
+			const cw = sliceW + 1;
+			const ch = rect.h * pxH;
+			strip.setOrigin(0.5, 0.5)
+				.setCrop(cx, cy, cw, ch)
+				// a cropped Image still pivots on the FULL frame —
+				// move the display origin to this slice's center
+				// or every strip is shoved sideways by crop.x
+				.setDisplayOrigin(cx + cw / 2, cy + ch / 2)
+				.setDepth(depth);
+			// source slice size in LOGICAL units — the renderer
+			// divides crop pixels by resolution before scaling
+			strip.srcW = (sliceW + 1) / res;
+			strip.srcH = (rect.h * pxH) / res;
+			strips.push(strip);
 		}
-		const row = n + 1;
-		for (let j = 0; j < n; j++) {
-			for (let i = 0; i < n; i++) {
-				const tl = j * row + i;
-				const tr = tl + 1;
-				const bl = tl + row;
-				const br = bl + 1;
-				indices.push(tl, tr, br, 0);
-				indices.push(tl, br, bl, 0);
-			}
+		this.layoutStrips(strips, quad);
+		return strips;
+	}
+
+
+	// Midpoint of the column at u — halfway down between the
+	// quad's top and bottom edges.
+	quadEdge(quad, u) {
+		const top = this.lerpPt(quad.tl, quad.tr, u);
+		const bot = this.lerpPt(quad.bl, quad.br, u);
+		return {
+			x: (top.x + bot.x) / 2,
+			y: (top.y + bot.y) / 2,
+		};
+	}
+
+
+	// Stretch every strip between the quad's top and bottom edges
+	// at its column position — that's the whole fake: columns
+	// shrink toward the far edge, which reads as perspective.
+	layoutStrips(strips, quad) {
+		const n = strips.length;
+		for (let i = 0; i < n; i++) {
+			const u = (i + 0.5) / n;
+			const top = this.lerpPt(quad.tl, quad.tr, u);
+			const bot = this.lerpPt(quad.bl, quad.br, u);
+			const h = Math.hypot(bot.x - top.x, bot.y - top.y);
+			// column width: actual spacing between this column's
+			// left and right edges, measured at mid-height, plus a
+			// little overlap to hide seams
+			const mid0 = this.quadEdge(quad, i / n);
+			const mid1 = this.quadEdge(quad, (i + 1) / n);
+			const w = Math.hypot(mid1.x - mid0.x, mid1.y - mid0.y) * 1.08;
+			strips[i]
+				.setPosition((top.x + bot.x) / 2, (top.y + bot.y) / 2)
+				.setScale(w / strips[i].srcW, h / strips[i].srcH)
+				// tilt the column when the quad's edges aren't vertical
+				.setRotation(Math.atan2(bot.x - top.x, bot.y - top.y));
 		}
-		return { vertices, indices };
 	}
 
 
@@ -371,24 +427,27 @@ class GameBoard extends Phaser.Scene {
 		this.sound.play(CJ.SFX.SELECT.key);
 		this.host.announce();
 
-		// Flyer: a tiny mesh that draws just this cell's slice of
-		// the baked board texture. Its vertices start on the
-		// projected quad and end on the screen corners.
+		// Flyer: the cell's slice of the baked texture, cut into
+		// strips like the board. It starts on the projected quad
+		// and morphs up to cover the screen.
 		const { u0, v0, u1, v1 } = cell.uv;
-		// same (u, 1-v) flip as the board mesh
-		const verts = [
-			cell.pts[0].x, cell.pts[0].y, u0, 1 - v0,
-			cell.pts[1].x, cell.pts[1].y, u1, 1 - v0,
-			cell.pts[2].x, cell.pts[2].y, u1, 1 - v1,
-			cell.pts[3].x, cell.pts[3].y, u0, 1 - v1,
-		];
-		this.flyer = this.add.mesh2d(
-			0,
-			0,
-			GameBoard.BOARD_TEX,
-			verts,
-			[0, 1, 2, 0, 0, 2, 3, 0]
-		).setDepth(10); // above everything, it becomes the screen
+		const rect = {
+			x: u0 * this.boardW,
+			y: v0 * this.boardH,
+			w: (u1 - u0) * this.boardW,
+			h: (v1 - v0) * this.boardH,
+		};
+		this.flyer = this.buildStrips(
+			{
+				tl: cell.pts[0],
+				tr: cell.pts[1],
+				br: cell.pts[2],
+				bl: cell.pts[3],
+			},
+			rect,
+			GameBoard.FLY_STRIPS,
+			10 // above everything, it becomes the screen
+		);
 
 		const start = cell.pts;
 		const w = this.scale.width;
@@ -411,14 +470,15 @@ class GameBoard extends Phaser.Scene {
 	}
 
 
-	// One frame of the flight: slide each corner toward its
-	// screen edge, ending flat and face-on.
+	// One frame of the flight: lerp the flyer's quad toward the
+	// screen corners, then re-stretch its strips over it.
 	flyStep(start, end, t) {
-		const v = this.flyer.vertices;
-		for (let i = 0; i < 4; i++) {
-			v[i * 4] = start[i].x + (end[i].x - start[i].x) * t;
-			v[i * 4 + 1] = start[i].y + (end[i].y - start[i].y) * t;
-		}
+		this.layoutStrips(this.flyer, {
+			tl: this.lerpPt(start[0], end[0], t),
+			tr: this.lerpPt(start[1], end[1], t),
+			br: this.lerpPt(start[2], end[2], t),
+			bl: this.lerpPt(start[3], end[3], t),
+		});
 	}
 
 
