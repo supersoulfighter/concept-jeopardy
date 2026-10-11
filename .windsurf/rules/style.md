@@ -24,9 +24,9 @@ globs:
   clever for this audience.
 - **K&R braces** — opening brace on the same line as the statement.
 - **Line length** — split entities that have sequences of items, like objects, arrays, parameter lists, and chained
-  calls, across multiple line, one item per line, but not id the whole line fits in ~60 chars. 
+  calls, across multiple line, one item per line, but not if the whole line fits in ~60 chars. 
 - **Formatting** — tabs for indentation, single quotes, semicolons.
-- **Line spacing** — use 1 empty lines between fields, 2 between functions; and fields; 3 between classes or regions
+- **Line spacing** — use 1 empty lines between fields, 2 between functions and fields; 3 between classes or regions
 - **IDE Regions** — use //#region RegionName ... //#endregion to organize long sections of code. Standard regions, in order:
   - Scenes: Configuration (static config fields) → Constructor →
     Events (lifecycle methods init/preload/create/update plus event
