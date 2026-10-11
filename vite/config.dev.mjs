@@ -8,7 +8,7 @@ export default defineConfig({
 	},
 	plugins: [
 		concat({
-			files: { 'concept-jeopardy.js': ['src/**'] },
+			files: { 'concept-jeopardy.js': ['src/**/*.js'] },
 			input: ['concept-jeopardy.js']
 		})
 	]
